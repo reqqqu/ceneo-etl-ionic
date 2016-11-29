@@ -17,7 +17,8 @@
 angular.module( 'CeneoETL', [
   'ionic',
   'ngCordova',
-  'ngResource'
+  'ngResource',
+  'pouchdb'
 ] )
 .run( [
   '$ionicPlatform',
@@ -88,4 +89,5 @@ angular.module( 'CeneoETL', [
 //
 .factory( 'ExampleService',        require( './services/ExampleService' ) )
 .factory( 'ApiService',            require( './services/ApiService'     ) )
+.factory( 'DBService',            require( './services/DBService'     ) )
 ;

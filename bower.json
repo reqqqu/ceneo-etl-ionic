@@ -1,13 +1,14 @@
 {
   "name": "CeneoETL",
-  "author": "Sylwia Grzegolec, Rafał Kolasiński, Arkadiusz Jakubas, Kamil Pietrucha <rafal.kolasinski92@gmail.com>",
+  "author": "Sylwia Grzegolec, Rafał Kolasiński, Arkadiusz Jakubas, Kamil Pietrucha",
   "private": "true",
   "devDependencies": {},
   "dependencies": {
     "angular": "~1.5.3",
     "ngCordova": "~0.1.26-alpha",
     "angular-resource": "~1.5.3",
-    "ionic": "~1.3.0"
+    "ionic": "~1.3.0",
+    "angular-pouchdb": "^5.0.0"
   },
   "resolutions": {
     "angular": "1.5.3"

@@ -1,5 +1,5 @@
 # Ceneo ETL Ionic
-Hybrid mobile app that lets the user apply ETL process on Ceneo price comparison service and keeps extracted data in local db based on Ionic/AngularJS 1.x framework.
+Hybrid mobile app based on Ionic/AngularJS 1.x framework that lets the user apply ETL process on Ceneo price comparison service and keeps extracted data in local db.
 
 Running the application locally requires these steps:
 * Clone the repository
