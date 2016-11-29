@@ -2,10 +2,12 @@
 Hybrid mobile app that lets the user apply ETL process on Ceneo price comparison service and keeps extracted data in local db based on Ionic/AngularJS 1.x framework.
 
 Running the application locally requires these steps:
-- Clone the repository
-- run `npm install`
-- run `bower install`
--
+* Clone the repository
+* Run `gulp` (requires 'gulp' node module installed globally)
+
+Additional notes:
+* `gulp --build` or short `gulp -b` -> runs app build (concat .js files to app.js/version main.css & app.js/build into www/remove debug messages)
+* `gulp -e <platform>` (platform = 'ios' or 'android') -> runs app in the emulator of choice
 
 Authors:
 * Sylwia Grzegolec (https://github.com/niemaszoka)
