@@ -1,5 +1,39 @@
 <ion-view title="Home">
-  <ion-content class="has-header padding">
-    <h1>Dash</h1>
+  <ion-content class="has-header">
+    <div class="etl-buttons">
+
+      <!-- info card -->
+      <div class="card">
+        <div class="item item-text-wrap center-text card-background">
+          <!-- <span class="card-text">Enter product's name you would like to check opinions of and use the ETL buttons to get the process started.</span>-->
+          <span class="card-text">Wprowadź nazwę produktu, którego opinie chciał(a)byś sprawdzić, a następnie użyj przycisków ETL, aby rozpocząć proces.</span>
+        </div>
+      </div>
+
+      <!-- product name input -->
+      <div class="list list-inset">
+        <label class="item item-input product-name-input-label">
+          <i class="icon ion-search placeholder-icon"></i>
+          <input type="text" placeholder="Szukaj..." ng-model="searchKeywords">
+        </label>
+      </div>
+
+      <!-- etl buttons -->
+      <div class="button-bar">
+        <button class="button button-full">
+          <span>Extract</span>
+        </button>
+        <button class="button button-full" ng-disabled="!hasExtractFinished">
+          <span>Transform</span>
+        </button>
+        <button class="button button-full" ng-disabled="!hasTransformFinished">
+          <span>Load</span>
+        </button>
+      </div>
+
+      <button class="button button-full">
+        <span>ETL</span>
+      </button>
+    </div>
   </ion-content>
 </ion-view>

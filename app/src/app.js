@@ -64,7 +64,7 @@ angular.module( 'CeneoETL', [
       })
       .state('app.stats', {
         url: '/stats',
-        cache: true,
+        //cache: true, //keep commented up until results caching is (not) confirmed w/ guys
         views: {
           'tab-stats': {
             templateUrl: 'templates/views/stats.html',
@@ -88,6 +88,7 @@ angular.module( 'CeneoETL', [
 // Angular module services
 //
 .factory( 'ExampleService',        require( './services/ExampleService' ) )
-.factory( 'ApiService',            require( './services/ApiService'     ) )
+.factory( 'EtlService',            require( './services/EtlService'     ) )
 .factory( 'DBService',            require( './services/DBService'     ) )
+.factory( 'UtilService',            require( './services/UtilService'     ) )
 ;
