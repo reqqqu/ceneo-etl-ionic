@@ -1,30 +1,13 @@
-<ion-side-menus>
-    <!-- Center content -->
-    <ion-side-menu-content>
+<ion-tabs class="tabs-icon-top">
 
-        <ion-nav-view name="viewContent">
+  <!-- home tab -->
+  <ion-tab title="Home" icon="icon ion-ios-search-strong" href="#/app/home">
+    <ion-nav-view name="tab-home"></ion-nav-view>
+  </ion-tab>
 
-        </ion-nav-view>
-    </ion-side-menu-content>
+  <!-- stats tab -->
+  <ion-tab title="Stats" icon="icon ion-ios-star-outline" href="#/app/stats">
+    <ion-nav-view name="tab-stats"></ion-nav-view>
+  </ion-tab>
 
-    <!-- Left menu -->
-    <ion-side-menu side="left" class="side-menu">
-
-        <ion-header-bar align-title="center" class="bar-positive">
-            <h1 class="title">Side Menu</h1>
-        </ion-header-bar>
-
-        <ion-content class="has-header">
-            <div class="list">
-                <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.home">
-                    <i class="icon ion-home"></i>
-                    Home
-                </a>
-                <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.settings">
-                    <i class="icon ion-settings"></i>
-                    Settings
-                </a>
-            </div>
-        </ion-content>
-    </ion-side-menu>
-</ion-side-menus>
+</ion-tabs>

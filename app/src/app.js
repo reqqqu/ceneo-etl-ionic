@@ -56,19 +56,19 @@ angular.module( 'CeneoETL', [
         url: '/home',
         cache: true,
         views: {
-          'viewContent': {
+          'tab-home': {
             templateUrl: 'templates/views/home.html',
             controller: 'HomeController'
           }
         }
       })
-      .state('app.settings', {
-        url: '/settings',
+      .state('app.stats', {
+        url: '/stats',
         cache: true,
         views: {
-          'viewContent': {
-            templateUrl: 'templates/views/settings.html',
-            controller: 'SettingsController'
+          'tab-stats': {
+            templateUrl: 'templates/views/stats.html',
+            controller: 'StatsController'
           }
         }
       });
@@ -83,7 +83,7 @@ angular.module( 'CeneoETL', [
 //
 .controller( 'MainController',     require( './controllers/mainController'     ) )
 .controller( 'HomeController',     require( './controllers/homeController'     ) )
-.controller( 'SettingsController', require( './controllers/settingsController' ) )
+.controller( 'StatsController',     require( './controllers/statsController' ) )
 
 // Angular module services
 //
