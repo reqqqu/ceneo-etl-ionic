@@ -41,6 +41,7 @@
     "merge-stream": "^1.0.0",
     "node-sass": "^3.4.2",
     "open": "0.0.5",
+    "request": "^2.79.0",
     "ripple-emulator": "^0.9.32",
     "run-sequence": "^1.1.5",
     "shelljs": "^0.5.3",

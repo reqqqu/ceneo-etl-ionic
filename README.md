@@ -3,6 +3,7 @@ Hybrid mobile app based on Ionic/AngularJS 1.x framework that lets the user appl
 
 Running the application locally requires these steps:
 * Clone the repository
+* Run `npm install`, `bower install`
 * Run `gulp` (requires 'gulp' node module installed globally)
 
 Additional notes:
