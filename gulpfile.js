@@ -23,6 +23,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
 var wiredep = require('wiredep');
 var babel = require('babelify');
+var request = require('request');
 
 /**
  * Parse arguments
@@ -261,13 +262,22 @@ gulp.task('index', ['jsHint', 'scripts'], function() {
     .on('error', errorHandler);
 });
 
+var host = 'http://localhost:' + port + '/';
+// for dev purposes only - example xhr URL
+// xhr.get('http://localhost:9000/proxy?url=http://ceneo.pl/19299330').then(function(data){console.log(data)});
+
+
 // start local express server
 gulp.task('serve', function() {
   express()
+    .use('/proxy', function(req, res) {
+      var target = req.url.replace('/?url=','');
+      req.pipe(request(target)).pipe(res);
+    })
     .use(!build ? connectLr() : function(){})
     .use(express.static(targetDir))
     .listen(port);
-  open('http://localhost:' + port + '/');
+  open(host);
 });
 
 // ionic emulate wrapper
