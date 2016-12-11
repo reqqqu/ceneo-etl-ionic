@@ -85,7 +85,7 @@ angular.module('CeneoETL', [
 
 // Angular module services
 //
-.factory( 'ExampleService',        require( './services/ExampleService' ) )
+.factory( 'HTTPService',        require( './services/HTTPService' ) )
 .factory( 'EtlService',            require( './services/EtlService'     ) )
 .factory( 'DBService',            require( './services/DBService'     ) )
 .factory( 'UtilService',            require( './services/UtilService'     ) )
