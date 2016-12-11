@@ -14,33 +14,31 @@
 //
 // var _ = require( 'lodash' );
 
-angular.module( 'CeneoETL', [
+angular.module('CeneoETL', [
   'ionic',
   'ngCordova',
   'ngResource',
   'pouchdb'
-] )
-.run( [
+])
+.run([
   '$ionicPlatform',
 
-  function( $ionicPlatform )
-  {
+  function( $ionicPlatform ){
 
-  $ionicPlatform.ready(function() {
+  $ionicPlatform.ready(function(){
     // save to use plugins here
   });
 
   // add possible global event handlers here
 
-} ] )
+}])
 
-.config( [
+.config([
   '$httpProvider',
   '$stateProvider',
   '$urlRouterProvider',
 
-  function( $httpProvider, $stateProvider, $urlRouterProvider )
-  {
+  function($httpProvider, $stateProvider, $urlRouterProvider){
     // register $http interceptors, if any. e.g.
     // $httpProvider.interceptors.push('interceptor-name');
 
@@ -52,13 +50,13 @@ angular.module( 'CeneoETL', [
         templateUrl: 'templates/main.html',
         controller: 'MainController'
       })
-      .state('app.home', {
-        url: '/home',
+      .state('app.etl', {
+        url: '/etl',
         cache: true,
         views: {
-          'tab-home': {
-            templateUrl: 'templates/views/home.html',
-            controller: 'HomeController'
+          'tab-etl': {
+            templateUrl: 'templates/views/etl.html',
+            controller: 'EtlController'
           }
         }
       })
@@ -75,14 +73,14 @@ angular.module( 'CeneoETL', [
 
 
     // redirects to default route for undefined routes
-    $urlRouterProvider.otherwise('/app/home');
+    $urlRouterProvider.otherwise('/app/etl');
   }
-] )
+])
 
 // Angular module controllers
 //
 .controller( 'MainController',     require( './controllers/mainController'     ) )
-.controller( 'HomeController',     require( './controllers/homeController'     ) )
+.controller( 'EtlController',     require( './controllers/etlController'     ) )
 .controller( 'StatsController',     require( './controllers/statsController' ) )
 
 // Angular module services
