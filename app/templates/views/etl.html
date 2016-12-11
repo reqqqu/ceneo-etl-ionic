@@ -19,7 +19,7 @@
 
       <!-- etl buttons -->
       <div class="button-bar">
-        <button class="button button-full" ng-click="extract()" ng-disabled="search.searchKeywords.length === 0">
+        <button class="button button-full" ng-click="extract()" ng-disabled="isProductNumberValid()">
           <span>Extract</span>
         </button>
         <button class="button button-full" ng-click="transform()" ng-disabled="!hasExtractFinished">
