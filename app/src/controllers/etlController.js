@@ -26,12 +26,22 @@ module.exports = [
 
 
         $scope.extract = function() {
-              HTTPService.makeRequest($scope.search.searchKeywords, 0, null).then(function (response) {
-                  //console.log(response.data);
-                  $scope.data = response.data;
-                  var htmlElement = angular.element($scope.data);
-                  var reviewsContainer = htmlElement.find('ol');
+              var productId = $scope.search.searchKeywords;
+              // var requestLoop = true;
 
+              // if(requestLoop === true) {
+              //
+              // }
+
+              HTTPService.makeRequest($scope.search.searchKeywords, 0, null).then(function (response) {
+                  var rawData = response.data;
+
+                  // if(thereisresponse) {
+                    // set the request flag to false
+                    // requestLoop = false;
+                  // }
+
+                  HTTPService.parseResponse(rawData, productId);
               },
               function (error) {
                   console.log('error');
