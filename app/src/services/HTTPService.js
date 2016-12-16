@@ -35,7 +35,7 @@ module.exports = [
                 console.log('Successfully got ETL server data.');
                 return res;
             }).error(function(err) {
-                console.log('An error occured while getting ETL server data.');
+                console.log('An error occured while getting ETL server data.', err);
                 return null;
             });
         };
@@ -44,83 +44,149 @@ module.exports = [
           var _data = data;
           var parser = new DOMParser();
           var doc = parser.parseFromString(_data, 'text/html');
-          var _productId = "";
 
-          // @todo: getting product containers/elements to map only for the first req
-          if(responseIndex === 1) {
-            var productContainer = "";
-              _productId = productId;
-          }
+          /*
+           * getting product containers/reviews
+           */
+          var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
+          var product = {
+            id                  : '',
+            category            : '',
+            brand               : '',
+            model               : '',
+            additionalFeatures  : [],
+            reviews             : []
+          };
+          var productString = "";
 
-          // getting review containers/reviews
+          product.id = productId;
+
+          /*
+           * getting review containers/reviews
+           */
           var reviewsContainer = angular.element(doc.querySelector(".review-box-items-list"));
           var reviews = reviewsContainer[0].getElementsByClassName("review-box-item");
 
-          // getting review details to map
-          var disadventages = [];
-          var advantages = [];
-          var summary = '';
-          var starsCount = 0;
-          var author =  '';
-          var submissionDate = null;
-          var recommendsProduct = false;
-          var ratedUsefulCount = 0;
-          var ratedUselessCount = 0;
-          var id = '';
-          var reviewDataArray = [];
+
+          var review              = {};
+
+          var disadvantages       = [];
+          var advantages          = [];
+          var summary             = '';
+          var starsCount          = 0;
+          var author              =  '';
+          var submissionDate      = null;
+          var recommendsProduct   = false;
+          var ratedUsefulCount    = 0; // @rk: n/a in mobile mode (m.ceneo.pl req)
+          var ratedUselessCount   = 0; // @rk: n/a in mobile mode (m.ceneo.pl req)
+          var id                  = '';
+          var reviewDataArray     = [];
 
           for(var i=0; i<reviews.length; i++) {
-            //@todo: extract the rest of the props from res n put it into array to map
-            id = new Date(reviews[i].querySelector("time").getAttribute("datetime")).getTime(); //id (timestamp)
-            reviewDataArray.push();
+            // getting review details to map
+            disadvantages         = [];
+            advantages            = [];
+            summary               = '';
+            starsCount            = 0;
+            author                =  '';
+            submissionDate        = null;
+            recommendsProduct     = false;
+            ratedUsefulCount      = 0;
+            ratedUselessCount     = 0;
+            id                    = '';
+
+            var disadvantagesNodes = reviews[i].querySelectorAll(".product-pros-cons .red-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li");
+            if(disadvantagesNodes.length > 0) {
+                for(var x=0; x<disadvantagesNodes.length; x++) {
+                  disadvantages.push(disadvantagesNodes[x].innerHTML);
+                }
+            }
+            disadvantagesNodes = [];
+
+            var advantagesNodes = reviews[i].querySelectorAll(".product-pros-cons .green-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li");
+            if(advantagesNodes.length > 0) {
+              for(var x=0; x<advantagesNodes.length; x++) {
+                advantages.push(advantagesNodes[x].innerHTML);
+              }
+            }
+            advantagesNodes = [];
+
+            summary           = reviews[i].querySelector("div .grey-text.text-darken-2.m-font-14").innerHTML;
+            starsCount        = reviews[i].querySelector(".score__meter").innerHTML;
+            author            = reviews[i].querySelector(".review-box-reviewer").innerHTML;
+            submissionDate    = new Date(reviews[i].querySelector("time").getAttribute("datetime")).getTime();
+            recommendsProduct = reviews[i].querySelector(".review-box-header-data .uppercase.green-text").innerHTML;
+            id                = submissionDate;
+
+            // rk@todo: pass it to mapReviewData later on to make the code cleaner
+            var review = {
+              "disadvantages"       : disadvantages,
+              "advantages"          : advantages,
+              "summary"             : summary,
+              "starsCount"          : starsCount,
+              "author"              : author,
+              "submissionDate"      : submissionDate,
+              "recommendsProduct"   : recommendsProduct,
+              "ratedUsefulCount"    : ratedUsefulCount,
+              "ratedUselessCount"   : ratedUselessCount,
+              "id"                  : id
+            };
+
+            reviewDataArray.push(review);
+            // reviewsMapArray.push(mapReviewData(reviewDataArray)); // @rk: this will be used in refactoring
           }
 
-          // returns maps to do whatever next
-          return mapData();
+          console.log(reviewDataArray);
+
+          // saving review data to product object
+          product.reviews = reviewDataArray;
+
+          // returns stringified JSON
+          return JSON.stringify(product);
         };
 
-        var mapData = function(reviewDataArray, productDataArray, productId) {
-          // map product properties if it's the first request (if the productId exists)
+        // @rk: this method will be used in refactoring
+        var mapProductData = function(productDataArray) {
+          // map product properties
           if(productId) {
             var product = {
-              id: '',
-              category: '',
-              brand: '',
-              model: '',
-              additionalFeatures: [],
-              reviews: []
+              id                  : '',
+              category            : '',
+              brand               : '',
+              model               : '',
+              additionalFeatures  : [],
+              reviews             : []
             };
 
             for(var i=0; i<productDataArray.length; i++) {
               for(var prop in product) {
-                if(i) {
-                  product[prop] = i;
-                }
+                product[prop] = productDataArray[i];
               }
             }
           }
+        };
 
+        // @rk: this method will be used in refactoring
+        var mapReviewData = function(reviewDataArray) {
           // map review properties
           var review = {
-            disadvantages: [],
-            advantages: [],
-            summary: '',
-            starsCount: 0,
-            author: '',
-            submissionDate: null,
-            recommendsProduct: false,
-            ratedUsefulCount: 0,
-            ratedUselessCount: 0,
-            id: ''
+            disadvantages         : [],
+            advantages            : [],
+            summary               : '',
+            starsCount            : 0,
+            author                : '',
+            submissionDate        : null,
+            recommendsProduct     : false,
+            ratedUsefulCount      : 0,
+            ratedUselessCount     : 0,
+            id                    : ''
           };
 
-          for(var i=0; i<reviewDataArray.length; i++) {
-            if(i) {
-              for(var prop in review) {
-                review[prop] = i;
-              }
+          for (var i = 0; i < reviewDataArray.length; i++) {
+            for (var prop in review) {
+              review[prop] = reviewDataArray[i];
             }
-          }
+          };
         };
 
         return {
