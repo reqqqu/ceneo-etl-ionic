@@ -111,11 +111,23 @@ module.exports = [
             }
             advantagesNodes = [];
 
-            summary           = reviews[i].querySelector("div .grey-text.text-darken-2.m-font-14").innerHTML;
-            starsCount        = reviews[i].querySelector(".score__meter").innerHTML;
-            author            = reviews[i].querySelector(".review-box-reviewer").innerHTML;
+            summary           = reviews[i].querySelector("div .grey-text.text-darken-2.m-font-14");
+            if(summary) {
+              summary = summary.innerHTML;
+            }
+            starsCount        = reviews[i].querySelector(".score__meter");
+            if(starsCount) {
+              starsCount = starsCount.innerHTML;
+            }
+            author            = reviews[i].querySelector(".review-box-reviewer");
+            if(author) {
+              author = author.innerHTML;
+            }
             submissionDate    = reviews[i].querySelector("time").getAttribute("datetime");
-            recommendsProduct = reviews[i].querySelector(".review-box-header-data .uppercase.green-text").innerHTML;
+            recommendsProduct = reviews[i].querySelector(".review-box-header-data .uppercase.green-text");
+            if(recommendsProduct) {
+              recommendsProduct = recommendsProduct.innerHTML;
+            }
             id                = new Date(submissionDate).getTime();
 
             // rk@todo: pass it to mapReviewData later on to make the code cleaner
