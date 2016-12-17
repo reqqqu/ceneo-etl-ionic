@@ -7,46 +7,65 @@
  * # Database service used to store data
  */
 module.exports = [
-  'pouchDB',
-  '$q',
+    'pouchDB',
+    'Loki',
+    '$q',
 
-  function(pouchDB, $q) {
-    var db = pouchDB('dbName');
+  function(pouchDB, Loki, $q) {
     var q = $q.defer();
 
-    //@todo: refactoring - just a sample - might need changes according to chosen approach for storing data
-    var readRecord = function(query) {
-      var _docId = '';
-      if(query.id || query._id) {
-        _docId = query.id || query._id;
-      }
-      return db.get(_docId)
-        .then(function(rec) {
-          q.resolve(rec);
-        }, function(err) {
-          if(err.status === 404) {
-            console.log('Error 404, record not found.');
-            q.reject(null);
-          } else {
-            console.log('An error occured while getting record.');
-            q.reject(err);
-          }
-        })
-        .catch(function(err) {
-          console.log(err);
-          q.reject(err);
-        });
+      var _db;
+      var _products;
 
-      return q.promise;
-    };
+      function initDB() {
+          //var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+          _db = new Loki('ceneoDB',
+              {
+                  autosave: true,
+                  autosaveInterval: 1000//, // 1 second
+                  //adapter: adapter
+              });
+          console.log(_db);
+      };
+
+      function getAllProducts() {
+        return $q(function (resolve, reject) {
+          var options = {};
+
+          _db.loadDatabase(options, function () {
+            _products = _db.getCollection('products');
+
+            if (!_products) {
+              _products = _db.addCollection('products');
+            }
+
+            resolve(_products.data);
+          });
+        });
+      }
+
+      function addProduct(product) {
+        _products.insert(product)
+      }
+
+      function updateProduct(product) {
+        _products.update(product);
+      }
+
+      function deleteProduct(product) {
+        _products.remove(product);
+      }
+
+
 
     // public api
     //@todo: add remaining CRUD methods for database management
     return {
-      //createRecord: createRecord
-      readRecord: readRecord
-      //updateRecord: updateRecord,
-      //deleteRecord: deleteRecord
+      initDB : initDB,
+      getAllProducts: getAllProducts,
+      addProduct: addProduct,
+      updateProduct: updateProduct,
+      deleteProduct: deleteProduct,
     };
   }
 ];

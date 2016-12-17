@@ -8,8 +8,10 @@
  */
 module.exports = [
     '$http',
+    'ReviewFactory',
+    'ProductFactory',
 
-    function($http) {
+    function($http, ReviewFactory, ProductFactory) {
         var makeRequest = function(url, requestType, params) {
             var customUrl = "";
             var ceneoUrl = "http://www.ceneo.pl/";
@@ -49,157 +51,58 @@ module.exports = [
            * getting product containers/reviews
            */
           var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
-          var product = {
-            id                  : '',
-            category            : '',
-            brand               : '',
-            model               : '',
-            additionalFeatures  : [],
-            reviews             : []
-          };
-          var productString = "";
+          var product = new ProductFactory();
+          var productString ='';
 
           product.id = productId;
 
           /*
            * getting review containers/reviews
            */
-          var reviewsContainer = angular.element(doc.querySelector(".review-box-items-list"));
-          var reviews = reviewsContainer[0].getElementsByClassName("review-box-item");
+          var reviewsContainer = angular.element(doc.querySelector('.review-box-items-list'));
+          var reviews = reviewsContainer[0].getElementsByClassName('review-box-item');
+          var reviewDataArray = [];
 
-
-          var review              = {};
-
-          var disadvantages       = [];
-          var advantages          = [];
-          var summary             = '';
-          var starsCount          = 0;
-          var author              =  '';
-          var submissionDate      = null;
-          var recommendsProduct   = false;
-          var ratedUsefulCount    = 0; // @rk: n/a in mobile mode (m.ceneo.pl req)
-          var ratedUselessCount   = 0; // @rk: n/a in mobile mode (m.ceneo.pl req)
-          var id                  = '';
-          var reviewDataArray     = [];
 
           for(var i=0; i<reviews.length; i++) {
-            // getting review details to map
-            disadvantages         = [];
-            advantages            = [];
-            summary               = '';
-            starsCount            = 0;
-            author                =  '';
-            submissionDate        = null;
-            recommendsProduct     = false;
-            ratedUsefulCount      = 0;
-            ratedUselessCount     = 0;
-            id                    = '';
+            var review              = new ReviewFactory();
 
-            var disadvantagesNodes = reviews[i].querySelectorAll(".product-pros-cons .red-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li");
+
+            var disadvantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .red-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
             if(disadvantagesNodes.length > 0) {
                 for(var x=0; x<disadvantagesNodes.length; x++) {
-                  disadvantages.push(disadvantagesNodes[x].innerHTML);
+                  review.data.disadvantages.push(disadvantagesNodes[x].innerHTML);
                 }
             }
             disadvantagesNodes = [];
 
-            var advantagesNodes = reviews[i].querySelectorAll(".product-pros-cons .green-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li");
+            var advantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .green-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
             if(advantagesNodes.length > 0) {
               for(var x=0; x<advantagesNodes.length; x++) {
-                advantages.push(advantagesNodes[x].innerHTML);
+                review.data.advantages.push(advantagesNodes[x].innerHTML);
               }
             }
             advantagesNodes = [];
 
-            summary           = reviews[i].querySelector("div .grey-text.text-darken-2.m-font-14");
-            if(summary) {
-              summary = summary.innerHTML;
-            }
-            starsCount        = reviews[i].querySelector(".score__meter");
-            if(starsCount) {
-              starsCount = starsCount.innerHTML;
-            }
-            author            = reviews[i].querySelector(".review-box-reviewer");
-            if(author) {
-              author = author.innerHTML;
-            }
-            submissionDate    = reviews[i].querySelector("time").getAttribute("datetime");
-            recommendsProduct = reviews[i].querySelector(".review-box-header-data .uppercase.green-text");
-            if(recommendsProduct) {
-              recommendsProduct = recommendsProduct.innerHTML;
-            }
-            id                = new Date(submissionDate).getTime();
-
-            // rk@todo: pass it to mapReviewData later on to make the code cleaner
-            var review = {
-              "disadvantages"       : disadvantages,
-              "advantages"          : advantages,
-              "summary"             : summary,
-              "starsCount"          : starsCount,
-              "author"              : author,
-              "submissionDate"      : submissionDate,
-              "recommendsProduct"   : recommendsProduct,
-              "ratedUsefulCount"    : ratedUsefulCount,
-              "ratedUselessCount"   : ratedUselessCount,
-              "id"                  : id
-            };
+            review.data.summary           = reviews[i].querySelector('div .grey-text.text-darken-2.m-font-14').innerHTML;
+            review.data.starsCount        = reviews[i].querySelector('.score__meter').innerHTML;
+            review.data.author            = reviews[i].querySelector('.review-box-reviewer').innerHTML;
+            review.data.submissionDate    = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();
+            review.data.recommendsProduct = reviews[i].querySelector('.review-box-header-data .uppercase.green-text').innerHTML;
+            review.data.id                = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();;
 
             reviewDataArray.push(review);
-            // reviewsMapArray.push(mapReviewData(reviewDataArray)); // @rk: this will be used in refactoring
           }
 
           console.log(reviewDataArray);
 
           // saving review data to product object
-          product.reviews = reviewDataArray;
+          product.data.reviews = reviewDataArray;
 
           // returns stringified JSON
-          return JSON.stringify(product);
+          return product;
         };
 
-        // @rk: this method will be used in refactoring
-        var mapProductData = function(productDataArray) {
-          // map product properties
-          if(productId) {
-            var product = {
-              id                  : '',
-              category            : '',
-              brand               : '',
-              model               : '',
-              additionalFeatures  : [],
-              reviews             : []
-            };
-
-            for(var i=0; i<productDataArray.length; i++) {
-              for(var prop in product) {
-                product[prop] = productDataArray[i];
-              }
-            }
-          }
-        };
-
-        // @rk: this method will be used in refactoring
-        var mapReviewData = function(reviewDataArray) {
-          // map review properties
-          var review = {
-            disadvantages         : [],
-            advantages            : [],
-            summary               : '',
-            starsCount            : 0,
-            author                : '',
-            submissionDate        : null,
-            recommendsProduct     : false,
-            ratedUsefulCount      : 0,
-            ratedUselessCount     : 0,
-            id                    : ''
-          };
-
-          for (var i = 0; i < reviewDataArray.length; i++) {
-            for (var prop in review) {
-              review[prop] = reviewDataArray[i];
-            }
-          };
-        };
 
         return {
             makeRequest: makeRequest,
