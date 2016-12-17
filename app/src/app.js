@@ -15,10 +15,11 @@
 // var _ = require( 'lodash' );
 
 angular.module('CeneoETL', [
-  'ionic',
-  'ngCordova',
-  'ngResource',
-  'pouchdb'
+    'ionic',
+    'ngCordova',
+    'ngResource',
+    'pouchdb',
+    'lokijs'
 ])
 .run([
   '$ionicPlatform',
@@ -79,14 +80,16 @@ angular.module('CeneoETL', [
 
 // Angular module controllers
 //
-.controller( 'MainController',     require( './controllers/mainController'     ) )
-.controller( 'EtlController',     require( './controllers/etlController'     ) )
-.controller( 'StatsController',     require( './controllers/statsController' ) )
+  .controller( 'MainController',     require( './controllers/mainController'     ) )
+  .controller( 'EtlController',     require( './controllers/etlController'     ) )
+  .controller( 'StatsController',     require( './controllers/statsController' ) )
 
 // Angular module services
 //
-.factory( 'HTTPService',        require( './services/HTTPService' ) )
-.factory( 'EtlService',            require( './services/EtlService'     ) )
-.factory( 'DBService',            require( './services/DBService'     ) )
-.factory( 'UtilService',            require( './services/UtilService'     ) )
+  .factory( 'HTTPService',        require( './services/HTTPService' ) )
+  .factory( 'EtlService',            require( './services/EtlService'     ) )
+  .factory( 'DBService',            require( './services/DBService'     ) )
+  .factory( 'UtilService',            require( './services/UtilService'     ) )
+  .factory( 'ProductFactory',            require( './services/ProductFactory'     ) )
+  .factory( 'ReviewFactory',            require( './services/ReviewFactory'     ) )
 ;

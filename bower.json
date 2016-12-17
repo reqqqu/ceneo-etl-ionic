@@ -8,7 +8,14 @@
     "ngCordova": "~0.1.26-alpha",
     "angular-resource": "~1.5.3",
     "ionic": "~1.3.0",
-    "angular-pouchdb": "^5.0.0"
+    "angular-pouchdb": "^5.0.0",
+    "lokijs": "^1.4.1"
+  },
+
+  "overrides": {
+    "lokijs": {
+      "main": ["src/lokijs.js", "src/loki-angular.js"]
+    }
   },
   "resolutions": {
     "angular": "1.5.3"
