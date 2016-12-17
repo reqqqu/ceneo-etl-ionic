@@ -12,7 +12,7 @@ module.exports = [
     'ProductFactory',
 
     function($http, ReviewFactory, ProductFactory) {
-        var makeRequest = function(url, requestType, params) {
+        var makeRequest = function(url, requestIndex, params) {
             var customUrl = "";
             var ceneoUrl = "http://www.ceneo.pl/";
             var prefix = [
@@ -20,13 +20,18 @@ module.exports = [
                 window.location.pathname,
                 "proxy?url="
             ].join("");
+            var params = "";
+
+            // if(requestIndex > 1) {
+            //  params = ""; // set review page params etc.
+            // }
 
             console.log(typeof url);
             customUrl = [
                 prefix,
                 ceneoUrl,
                 url,
-                "/opinie-1;0160-1"
+                params
             ].join("");
 
 
@@ -42,7 +47,7 @@ module.exports = [
             });
         };
 
-        var parseResponse = function(data, responseIndex, productId) {
+        var parseResponse = function(data, productId) {
           var _data = data;
           var parser = new DOMParser();
           var doc = parser.parseFromString(_data, 'text/html');
@@ -59,8 +64,8 @@ module.exports = [
           /*
            * getting review containers/reviews
            */
-          var reviewsContainer = angular.element(doc.querySelector('.review-box-items-list'));
-          var reviews = reviewsContainer[0].getElementsByClassName('review-box-item');
+          var reviewsContainer = angular.element(doc.querySelector('.product-reviews'));
+          var reviews = reviewsContainer[0].querySelectorAll('li.product-review');
           var reviewDataArray = [];
 
 
@@ -68,7 +73,7 @@ module.exports = [
             var review              = new ReviewFactory();
 
 
-            var disadvantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .red-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
+            var disadvantagesNodes = reviews[i].querySelectorAll('.pros-cell ul li');
             if(disadvantagesNodes.length > 0) {
                 for(var x=0; x<disadvantagesNodes.length; x++) {
                   review.disadvantages.push(disadvantagesNodes[x].innerHTML);
@@ -76,7 +81,7 @@ module.exports = [
             }
             disadvantagesNodes = [];
 
-            var advantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .green-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
+            var advantagesNodes = reviews[i].querySelectorAll('.cons-cell ul li');
             if(advantagesNodes.length > 0) {
               for(var x=0; x<advantagesNodes.length; x++) {
                 review.advantages.push(advantagesNodes[x].innerHTML);
@@ -84,18 +89,25 @@ module.exports = [
             }
             advantagesNodes = [];
 
-            review.summary           = reviews[i].querySelector('div .grey-text.text-darken-2.m-font-14').innerHTML;
-            review.starsCount        = reviews[i].querySelector('.score__meter').innerHTML;
-            review.author            = reviews[i].querySelector('.review-box-reviewer').innerHTML;
-            review.submissionDate    = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();
-            review.recommendsProduct = reviews[i].querySelector('.review-box-header-data .uppercase.green-text').innerHTML;
-            review.id                = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();;
+            review.summary           = reviews[i].querySelector('.product-review-body').innerHTML;
+            review.starsCount        = reviews[i].querySelector('.review-score-count').innerHTML;
+            if(review.starsCount) {
+              review.starsCount = review.starsCount.replace(/\/\d*/, "");
+            }
+            review.author            = reviews[i].querySelector('.product-reviewer').innerHTML;
+            review.submissionDate    = reviews[i].querySelector('time').getAttribute('datetime');
+            review.recommendsProduct = reviews[i].querySelector('.product-review-summary');
+            if(review.recommendsProduct) {
+              review.recommendsProduct = review.recommendsProduct.querySelector("em").innerHTML;
+            }
+            review.ratedUsefulCount = reviews[i].querySelector(".vote-yes").getAttribute("data-vote");
+            review.ratedUselessCount = reviews[i].querySelector(".vote-no").getAttribute("data-vote");
+            review.id                = new Date(review.submissionDate).getTime();
 
             reviewDataArray.push(review);
-            console.log(reviewDataArray, review);
           }
 
-
+          console.log(reviewDataArray);
 
           // saving review data to product object
           product.reviews = reviewDataArray;
