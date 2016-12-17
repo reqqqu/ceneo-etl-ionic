@@ -17,21 +17,19 @@ module.exports = [
      * disadventages, adventages, summary, starsCount, author, date, recommendsProduct, ratedUsefulCount, reviewRatedUnuseful
      */
     function Product(properties) {
-      this.data = productModel;
+      return angular.copy(productModel);
     }
 
     function addReview(review) {
-      this.productModel.reviews.add(review);
+
     }
 
     function hasReview(reviewId) {
-      return this.productModel.reviews.any(function (review) {
-        return review.id === reviewId;
-      });
+
     }
 
     function getAllReviews() {
-      return this.productModel.reviews;
+
     }
     /**
      * Return the constructor function

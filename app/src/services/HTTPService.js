@@ -71,7 +71,7 @@ module.exports = [
             var disadvantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .red-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
             if(disadvantagesNodes.length > 0) {
                 for(var x=0; x<disadvantagesNodes.length; x++) {
-                  review.data.disadvantages.push(disadvantagesNodes[x].innerHTML);
+                  review.disadvantages.push(disadvantagesNodes[x].innerHTML);
                 }
             }
             disadvantagesNodes = [];
@@ -79,25 +79,26 @@ module.exports = [
             var advantagesNodes = reviews[i].querySelectorAll('.product-pros-cons .green-text + .no-margin--top.no-margin--bottom.grey-text.text-darken-2.m-font-14 li');
             if(advantagesNodes.length > 0) {
               for(var x=0; x<advantagesNodes.length; x++) {
-                review.data.advantages.push(advantagesNodes[x].innerHTML);
+                review.advantages.push(advantagesNodes[x].innerHTML);
               }
             }
             advantagesNodes = [];
 
-            review.data.summary           = reviews[i].querySelector('div .grey-text.text-darken-2.m-font-14').innerHTML;
-            review.data.starsCount        = reviews[i].querySelector('.score__meter').innerHTML;
-            review.data.author            = reviews[i].querySelector('.review-box-reviewer').innerHTML;
-            review.data.submissionDate    = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();
-            review.data.recommendsProduct = reviews[i].querySelector('.review-box-header-data .uppercase.green-text').innerHTML;
-            review.data.id                = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();;
+            review.summary           = reviews[i].querySelector('div .grey-text.text-darken-2.m-font-14').innerHTML;
+            review.starsCount        = reviews[i].querySelector('.score__meter').innerHTML;
+            review.author            = reviews[i].querySelector('.review-box-reviewer').innerHTML;
+            review.submissionDate    = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();
+            review.recommendsProduct = reviews[i].querySelector('.review-box-header-data .uppercase.green-text').innerHTML;
+            review.id                = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();;
 
             reviewDataArray.push(review);
+            console.log(reviewDataArray, review);
           }
 
-          console.log(reviewDataArray);
+
 
           // saving review data to product object
-          product.data.reviews = reviewDataArray;
+          product.reviews = reviewDataArray;
 
           // returns stringified JSON
           return product;
