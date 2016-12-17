@@ -114,9 +114,9 @@ module.exports = [
             summary           = reviews[i].querySelector("div .grey-text.text-darken-2.m-font-14").innerHTML;
             starsCount        = reviews[i].querySelector(".score__meter").innerHTML;
             author            = reviews[i].querySelector(".review-box-reviewer").innerHTML;
-            submissionDate    = new Date(reviews[i].querySelector("time").getAttribute("datetime")).getTime();
+            submissionDate    = reviews[i].querySelector("time").getAttribute("datetime");
             recommendsProduct = reviews[i].querySelector(".review-box-header-data .uppercase.green-text").innerHTML;
-            id                = submissionDate;
+            id                = new Date(submissionDate).getTime();
 
             // rk@todo: pass it to mapReviewData later on to make the code cleaner
             var review = {
