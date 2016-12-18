@@ -9,10 +9,11 @@
 module.exports = [
     '$scope',
     '$sce',
-    'HTTPService',
+    '$ionicPlatform',
     'EtlService',
+    'DBService',
 
-    function($scope, $sce, HTTPService, EtlService) {
+    function($scope, $sce, $ionicPlatform, EtlService, DBService) {
 
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
@@ -20,39 +21,43 @@ module.exports = [
     		"searchKeywords": ""
     	};
 
+
+
+      $ionicPlatform.ready(function() {
+        // Initialize the database.
+        DBService.initDB();
+      });
+
     	$scope.isProductNumberValid = function () {
     	    return $scope.search.searchKeywords.length < 8 || typeof $scope.search.searchKeywords !== 'string' || isNaN($scope.search.searchKeywords);
         };
 
 
-        $scope.extract = function() {
-              var productId = $scope.search.searchKeywords;
-              // var requestLoop = true;
+      $scope.extract = function() {
+            var productId = $scope.search.searchKeywords;
 
-              // if(requestLoop === true) {
-              //
-              // }
+            EtlService.extractData(productId).then(function () {
+              $scope.hasExtractFinished = true;
+            });
 
-              HTTPService.makeRequest($scope.search.searchKeywords, 0, null).then(function (response) {
-                  var rawData = response.data;
+            return $scope.data;
+      };
 
-                  // if(thereisresponse) {
-                    // set the request flag to false
-                    // requestLoop = false;
-                  // }
-
-                  HTTPService.parseResponse(rawData, productId);
-              },
-              function (error) {
-                  console.log('error');
-              });
-
-
-              return $scope.data;
-        };
+      $scope.transform = function() {
+        return EtlService.transformData().then(function () {
+          $scope.hasTransformFinished = true;
+        });
+      };
 
       $scope.etl = function() {
+        var productId = $scope.search.searchKeywords;
 
+        return EtlService.extractData(productId).then(function () {
+          $scope.hasExtractFinished = true;
+          return EtlService.transformData().then(function () {
+            $scope.hasTransformFinished = true;
+          });
+        });
       }
     }
 ];
