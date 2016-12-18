@@ -115,7 +115,9 @@ module.exports = [
           }
 
           // saving review data to product object
-          product.reviews += reviewDataArray;
+          for(var i=0; i<reviewDataArray.length; i++) {
+            product.reviews.push(reviewDataArray[i]);
+          }
 
           console.log(product);
           return product;
