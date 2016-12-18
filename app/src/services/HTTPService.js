@@ -20,18 +20,13 @@ module.exports = [
                 window.location.pathname,
                 "proxy?url="
             ].join("");
-            var params = "";
-
-            // if(requestIndex > 1) {
-            //  params = ""; // set review page params etc.
-            // }
 
             console.log(typeof url);
             customUrl = [
                 prefix,
                 ceneoUrl,
                 url,
-                params
+                "/opinie-" + requestIndex + ";0160-1"
             ].join("");
 
 
@@ -55,11 +50,24 @@ module.exports = [
           /*
            * getting product containers/reviews
            */
-          var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
-          var product = new ProductFactory();
-          var productString ='';
+          if(productId) {
+            var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
+            var product = new ProductFactory();
 
-          product.id = productId;
+            product.id = _productId;
+            product.category = angular.element(doc.querySelector('.breadcrumbs'))[0].querySelectorAll(".breadcrumb")[1].querySelector("span").innerHTML;
+            var metaNodes = angular.element(doc.querySelector('head'))[0].querySelectorAll("meta");
+            if(metaNodes) {
+              for(var i=0; i<metaNodes.length; i++) {
+                if(metaNodes[i].hasAttribute("property") && metaNodes[i].getAttribute("property") === "og:brand") {
+                  product.brand = metaNodes[i].getAttribute("content");
+                }
+              }
+            }
+            product.model = angular.element(doc.querySelector(".js_searchInGoogleTooltip"))[0].innerHTML.replace(/product.brand /ig, "");
+            var modelRegexp = new RegExp(product.brand + " ", "ig");
+            product.model = product.model.replace(modelRegexp, "");
+          }
 
           /*
            * getting review containers/reviews
@@ -71,7 +79,6 @@ module.exports = [
 
           for(var i=0; i<reviews.length; i++) {
             var review              = new ReviewFactory();
-
 
             var disadvantagesNodes = reviews[i].querySelectorAll('.pros-cell ul li');
             if(disadvantagesNodes.length > 0) {
@@ -107,12 +114,10 @@ module.exports = [
             reviewDataArray.push(review);
           }
 
-          console.log(reviewDataArray);
-
           // saving review data to product object
-          product.reviews = reviewDataArray;
+          product.reviews += reviewDataArray;
 
-          // returns stringified JSON
+          console.log(product);
           return product;
         };
 
