@@ -49,6 +49,13 @@ module.exports = [
         });
       };
 
+      $scope.load = function () {
+        return EtlService.loadData().then(function () {
+          $scope.hasTransformFinished = false;
+          $scope.hasExtractFinished = false;
+        });
+      };
+
       $scope.etl = function() {
         var productId = $scope.search.searchKeywords;
 

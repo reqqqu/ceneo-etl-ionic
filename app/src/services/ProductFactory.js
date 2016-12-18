@@ -45,14 +45,13 @@ module.exports = [
       DBService.updateProduct(product);
     }
 
-    function getAllReviews() {
-
-    }
-
     /**
      * Return the constructor function
      */
-    return Product;
+    return {
+      Product: Product,
+      hasReview: hasReview
+    };
   }
 ];/**
  * Created by Sylwia on 2016-12-13.

@@ -26,7 +26,12 @@ module.exports = [
                   autosaveInterval: 1000//, // 1 second
                   //adapter: adapter
               });
-          console.log(_db);
+        if (!_products) {
+          _products = _db.addCollection('products', {
+            indices: ['id']
+          });
+        }
+          console.log(_products);
       };
 
       function getAllProducts() {
@@ -35,30 +40,15 @@ module.exports = [
 
           _db.loadDatabase(options, function () {
             _products = _db.getCollection('products');
-
-            if (!_products) {
-              _products = _db.addCollection('products');
-            }
-
-            _getProductsIds();
+            console.log('PRODUCTS IN DB', _products.data);
             resolve(_products.data);
           });
         });
       }
 
       function addProduct(product) {
-        if (!_products || !_productsIds) {
-          getAllProducts();
-        }
-
-        if (isProductInDB(product.id)) {
-          return;
-        }
-
-        let varrr = _products.insert(product);
-        _addProductId(product.id);
-        console.log(_db, varrr);
-        console.log(_productsIds);
+        _products.insert(product);
+        console.log('----PRODUCT ADDED TO DATABASE----');
       }
 
       function updateProduct(product) {
@@ -70,19 +60,22 @@ module.exports = [
       }
 
       function isProductInDB(productId) {
-        return _productsIds.some(function (id) {
-          return productId === id;
+        return getProductWithId(productId).then(function (data) {
+          return data !== undefined;
         });
       }
 
-      function _getProductsIds() {
-        for (var key in _products.data) {
-          _productsIds.push(_products.data[key].id);
-        }
+      function getProductWithId(productId) {
+        return getAllProducts().then(function () {
+          return _products.find({ id : productId})[0];
+        });
       }
-
-      function _addProductId(productId) {
-        _productsIds.push(productId);
+      function updateReviews(productId, reviews) {
+        return getProductWithId(productId).then(function (productFromDB) {
+          productFromDB.reviews = [].concat(productFromDB.reviews, reviews);
+          updateProduct(productFromDB);
+          console.log('PRODUCT UPDATED WITH REVIEWS ', reviews);
+        })
       }
 
 
@@ -95,6 +88,9 @@ module.exports = [
       addProduct: addProduct,
       updateProduct: updateProduct,
       deleteProduct: deleteProduct,
+      isProductInDB: isProductInDB,
+      getProductWithId: getProductWithId,
+      updateReviews: updateReviews
     };
   }
 ];
