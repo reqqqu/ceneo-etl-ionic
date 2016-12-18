@@ -16,6 +16,7 @@ module.exports = [
 
       var _db;
       var _products;
+      var _productsIds = [];
 
       function initDB() {
           //var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
@@ -25,7 +26,12 @@ module.exports = [
                   autosaveInterval: 1000//, // 1 second
                   //adapter: adapter
               });
-          console.log(_db);
+        if (!_products) {
+          _products = _db.addCollection('products', {
+            indices: ['id']
+          });
+        }
+          console.log(_products);
       };
 
       function getAllProducts() {
@@ -34,18 +40,15 @@ module.exports = [
 
           _db.loadDatabase(options, function () {
             _products = _db.getCollection('products');
-
-            if (!_products) {
-              _products = _db.addCollection('products');
-            }
-
+            console.log('PRODUCTS IN DB', _products.data);
             resolve(_products.data);
           });
         });
       }
 
       function addProduct(product) {
-        _products.insert(product)
+        _products.insert(product);
+        console.log('----PRODUCT ADDED TO DATABASE----');
       }
 
       function updateProduct(product) {
@@ -54,6 +57,25 @@ module.exports = [
 
       function deleteProduct(product) {
         _products.remove(product);
+      }
+
+      function isProductInDB(productId) {
+        return getProductWithId(productId).then(function (data) {
+          return data !== undefined;
+        });
+      }
+
+      function getProductWithId(productId) {
+        return getAllProducts().then(function () {
+          return _products.find({ id : productId})[0];
+        });
+      }
+      function updateReviews(productId, reviews) {
+        return getProductWithId(productId).then(function (productFromDB) {
+          productFromDB.reviews = [].concat(productFromDB.reviews, reviews);
+          updateProduct(productFromDB);
+          console.log('PRODUCT UPDATED WITH REVIEWS ', reviews);
+        })
       }
 
 
@@ -66,6 +88,9 @@ module.exports = [
       addProduct: addProduct,
       updateProduct: updateProduct,
       deleteProduct: deleteProduct,
+      isProductInDB: isProductInDB,
+      getProductWithId: getProductWithId,
+      updateReviews: updateReviews
     };
   }
 ];
