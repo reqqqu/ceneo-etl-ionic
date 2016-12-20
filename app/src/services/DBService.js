@@ -7,24 +7,22 @@
  * # Database service used to store data
  */
 module.exports = [
-    'pouchDB',
     'Loki',
     '$q',
 
-  function(pouchDB, Loki, $q) {
+  function(Loki, $q) {
     var q = $q.defer();
 
       var _db;
       var _products;
-      var _productsIds = [];
 
       function initDB() {
-          //var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+        var idbAdapter = new LokiIndexedAdapter();
           _db = new Loki('ceneoDB',
               {
                   autosave: true,
-                  autosaveInterval: 1000//, // 1 second
-                  //adapter: adapter
+                  autosaveInterval: 1000,//, // 1 second
+                  adapter: idbAdapter
               });
         if (!_products) {
           _products = _db.addCollection('products', {
