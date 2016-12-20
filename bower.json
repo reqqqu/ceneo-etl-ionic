@@ -14,7 +14,7 @@
 
   "overrides": {
     "lokijs": {
-      "main": ["src/lokijs.js", "src/loki-angular.js"]
+      "main": ["src/lokijs.js", "src/loki-angular.js", "src/loki-indexed-adapter.js"]
     }
   },
   "resolutions": {

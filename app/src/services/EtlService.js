@@ -17,7 +17,7 @@ module.exports = [
     function($q, HTTPService, ProductFactory, ReviewFactory, DBService) {
       var extractedData;
       var transformedProduct = {};
-      var transformedUniqueReviews = [];
+      var transformedReviews = [];
       var extractedProductId;
       var productFromDatabase = false;
 
@@ -57,7 +57,7 @@ module.exports = [
        */
       var loadData = function() {
         return _loadTransformedDataToDB().then(function () {
-          transformedUniqueReviews = [];
+          transformedReviews = [];
           transformedProduct = {};
           productFromDatabase = false;
         });
@@ -72,55 +72,60 @@ module.exports = [
        */
 
       var _transformExtractedData = function(data, productId) {
-        var transformationPromises = [];
+        var tranformationPromise = $q.defer();
         var _data = data;
         var parser = new DOMParser();
         var doc = parser.parseFromString(_data, 'text/html');
-        var transformedReviews = [];
-
 
         /*
          * getting product containers/reviews
          */
-        DBService.isProductInDB(productId).then(function (isInDB) {
-          if(!isInDB) {
-            var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
-            transformationPromises.push(_transformProduct(doc, _productId).then(function (data) {
-              transformedProduct = data;
-              console.log('NEW PRODUCT. EXTRACTED FROM FROM HTML ', transformedProduct);
-            }));
-          } else {
-            productFromDatabase = true;
-            transformationPromises.push(DBService.getProductWithId(productId).then(function (data) {
-              transformedProduct = data;
-              console.log('PRODUCT ALREADY IN DB ', transformedProduct);
-            }));
-          }
+        _getProductObject(doc, productId).then(function (productObject) {
+          transformedProduct = productObject;
+          _transformReviews(doc).then(function (reviewsArray) {
+            transformedReviews = reviewsArray;
+            tranformationPromise.resolve(true);
+
+          });
         });
 
+        return tranformationPromise.promise;
 
         /*
          * getting review containers/reviews
          */
-        transformationPromises.push(_transformReviews(doc).then(function (data) {
-          transformedReviews = data;
-        }));
-
-        return $q.all(transformationPromises).then(function () {
-          // saving review data to product object
-          var newReviewsCount = 0;
-          for(var i = 0; i < transformedReviews.length; i++) {
-            if( !ProductFactory.hasReview(transformedProduct, transformedReviews[i].id) ){
-              transformedUniqueReviews.push(transformedReviews[i]);
-              newReviewsCount++;
-            }
-          }
-
-          console.log('ADDED ', newReviewsCount, ' NEW REVIEWS TO PRODUCT');
-
-          return {};
-        })
       };
+
+      /**
+       * Gets Product object form database if it exists or creates object from html
+       * @param productId
+       * @returns {Promise}
+       * @private
+       */
+      function _getProductObject(doc, productId) {
+        var productPromise = $q.defer();
+        var productObject = {};
+
+        DBService.isProductInDB(productId).then(function (isInDB) {
+          if(!isInDB) {
+            var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
+            _transformProduct(doc, _productId).then(function (data) {
+              productObject = data;
+              console.log('NEW PRODUCT. EXTRACTED FROM FROM HTML ', productObject);
+              productPromise.resolve(productObject);
+            });
+          } else {
+            productFromDatabase = true;
+            DBService.getProductWithId(productId).then(function (data) {
+              productObject = data;
+              console.log('PRODUCT ALREADY IN DB ', productObject);
+              productPromise.resolve(productObject);
+            });
+          }
+        });
+
+        return productPromise.promise;
+      }
 
       /**
        * Transform product data from html tags to javascript objects
@@ -155,6 +160,8 @@ module.exports = [
 
       /**
        * Transform review data from html tags to javascript objects
+       * Returns ONLY reviews that are not in database
+       *
        * @param doc
        * @returns {Promise}
        * @private
@@ -164,58 +171,82 @@ module.exports = [
         var reviewsContainer = angular.element(doc.querySelector('.product-reviews'));
         var reviews = reviewsContainer[0].querySelectorAll('li.product-review');
         var reviewDataArray = [];
+        var newReviewsCount = 0;
 
 
         for(var i=0; i<reviews.length; i++) {
-          var review              = new ReviewFactory();
 
-          var disadvantagesNodes = reviews[i].querySelectorAll('.pros-cell ul li');
-          if(disadvantagesNodes.length > 0) {
-            for(var x=0; x<disadvantagesNodes.length; x++) {
-              review.disadvantages.push(disadvantagesNodes[x].innerHTML);
-            }
-          }
-          disadvantagesNodes = [];
+          var reviewId = new Date(reviews[i].querySelector('time').getAttribute('datetime')).getTime();
 
-          var advantagesNodes = reviews[i].querySelectorAll('.cons-cell ul li');
-          if(advantagesNodes.length > 0) {
-            for(var x=0; x<advantagesNodes.length; x++) {
-              review.advantages.push(advantagesNodes[x].innerHTML);
-            }
-          }
-          advantagesNodes = [];
-
-          review.summary           = reviews[i].querySelector('.product-review-body').innerHTML;
-          review.starsCount        = reviews[i].querySelector('.review-score-count').innerHTML;
-          if(review.starsCount) {
-            review.starsCount = review.starsCount.replace(/\/\d*/, "");
-          }
-          review.author            = reviews[i].querySelector('.product-reviewer').innerHTML;
-          review.submissionDate    = reviews[i].querySelector('time').getAttribute('datetime');
-          review.recommendsProduct = reviews[i].querySelector('.product-review-summary');
-          if(review.recommendsProduct) {
-            review.recommendsProduct = review.recommendsProduct.querySelector("em").innerHTML;
-          }
-          review.ratedUsefulCount = reviews[i].querySelector(".vote-yes").getAttribute("data-vote");
-          review.ratedUselessCount = reviews[i].querySelector(".vote-no").getAttribute("data-vote");
-          review.id                = new Date(review.submissionDate).getTime();
-
-          reviewDataArray.push(review);
+          // check if review already exists in database
+          if (!ProductFactory.hasReview(transformedProduct, reviewId)) {
+            var reviewObject = _getReviewObjectFromHTML(reviews[i]);
+            reviewDataArray.push(reviewObject);
+            newReviewsCount++;
+          };
         }
+
+        console.log('ADDED ', newReviewsCount, ' NEW REVIEWS TO PRODUCT');
 
         deferred.resolve(reviewDataArray);
         return deferred.promise;
       };
 
+      /**
+       * Method responsible for parsing review html node to js object
+       * @returns {*}
+       * @private
+       */
+      function _getReviewObjectFromHTML(reviewNode) {
+        var review             = new ReviewFactory();
+        var disadvantagesNodes = reviewNode.querySelectorAll('.pros-cell ul li');
+        if(disadvantagesNodes.length > 0) {
+          for(var x=0; x<disadvantagesNodes.length; x++) {
+            review.disadvantages.push(disadvantagesNodes[x].innerHTML);
+          }
+        }
+        disadvantagesNodes = [];
+
+        var advantagesNodes = reviewNode.querySelectorAll('.cons-cell ul li');
+        if(advantagesNodes.length > 0) {
+          for(var x=0; x<advantagesNodes.length; x++) {
+            review.advantages.push(advantagesNodes[x].innerHTML);
+          }
+        }
+        advantagesNodes = [];
+
+        review.summary           = reviewNode.querySelector('.product-review-body').innerHTML;
+        review.starsCount        = reviewNode.querySelector('.review-score-count').innerHTML;
+        if(review.starsCount) {
+          review.starsCount = review.starsCount.replace(/\/\d*/, "");
+        }
+        review.author            = reviewNode.querySelector('.product-reviewer').innerHTML;
+        review.submissionDate    = reviewNode.querySelector('time').getAttribute('datetime');
+        review.recommendsProduct = reviewNode.querySelector('.product-review-summary');
+        if(review.recommendsProduct) {
+          review.recommendsProduct = review.recommendsProduct.querySelector("em").innerHTML;
+        }
+        review.ratedUsefulCount = reviewNode.querySelector(".vote-yes").getAttribute("data-vote");
+        review.ratedUselessCount = reviewNode.querySelector(".vote-no").getAttribute("data-vote");
+        review.id                = new Date(review.submissionDate).getTime();
+
+        return review;
+      }
+
+      /**
+       * Loades product data to database
+       * @returns {Promise}
+       * @private
+       */
       function _loadTransformedDataToDB() {
         var deferred = $q.defer();
 
         if (!productFromDatabase) {
-          transformedProduct.reviews = transformedUniqueReviews;
+          transformedProduct.reviews = transformedReviews;
           DBService.addProduct(transformedProduct);
           deferred.resolve(true);
         } else {
-          DBService.updateReviews(transformedProduct.id, transformedUniqueReviews).then(function () {
+          DBService.updateReviews(transformedProduct.id, transformedReviews).then(function () {
               deferred.resolve(true);
           });
         }
