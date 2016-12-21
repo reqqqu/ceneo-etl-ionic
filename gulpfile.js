@@ -44,7 +44,7 @@ var emulate = args.emulate;
 var run = args.run;
 var port = args.port;
 var stripDebug = !!args.stripDebug;
-var targetDir = path.resolve(build ? 'www' : '.tmp');
+var targetDir = path.resolve(build ? 'public' : '.tmp');
 
 // if we just use emualate or run without specifying platform, we assume iOS
 // in this case the value returned from yargs would just be true
