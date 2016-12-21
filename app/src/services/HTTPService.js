@@ -13,15 +13,9 @@ module.exports = [
         var makeRequest = function(url, requestIndex, params) {
             var customUrl = "";
             var ceneoUrl = "http://www.ceneo.pl/";
-            var prefix = [
-                window.location.origin,
-                window.location.pathname,
-                "proxy?url="
-            ].join("");
 
             console.log(typeof url);
             customUrl = [
-                prefix,
                 ceneoUrl,
                 url,
                 "/opinie-" + requestIndex + ";0160-1"
