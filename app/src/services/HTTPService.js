@@ -12,7 +12,7 @@ module.exports = [
     function($http) {
         var makeRequest = function(url, requestIndex, params) {
             var customUrl = "";
-            var ceneoUrl = "http://www.ceneo.pl/";
+            var ceneoUrl = "https://www.ceneo.pl/";
 
             console.log(typeof url);
             customUrl = [
