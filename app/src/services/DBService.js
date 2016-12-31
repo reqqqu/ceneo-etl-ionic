@@ -119,7 +119,42 @@ module.exports = [
         });
       }
 
+       /**
+       * Gets reviews from product with id given in parameters and saves them as CSV file
+       * @param productId
+       */
+      function getReviewsFromProduct(productId) {
 
+        return getProductWithId(productId).then(function (productFromDB) {
+          var reviews = productFromDB.reviews;
+          var json1 = JSON.stringify(reviews);
+          var json2 = json1.replace(/\\n/g, "")
+                           .replace(/\[\]/g, "\"---\"");
+          var csv = convert(json2);
+          csv ='ADVANTAGES; DISADVANTAGES; SUMMARY; STARS COUNT; AUTHOR; SUBMISSION DATE; RECOMMENDS PRODUCT; RATED USEFUL COUNT; RATED USELESS COUNT; ID; \n' + csv;
+          var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+          saveAs(blob, "Reviews.csv");
+        });
+      }
+
+       /**
+       * Converts JSON to CSV
+       * @param objArray
+       */
+      function convert(objArray) {
+        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+        var str = '';
+
+        for (var i = 0; i < array.length; i++) {
+          var line = '';
+          for (var index in array[i]) {
+            if (line != '') line += ';'
+            line += array[i][index];
+          }
+            str += line + '\r\n';
+        }
+        return str;
+      }
 
     // public api
     return {
@@ -131,7 +166,8 @@ module.exports = [
       isProductInDB: isProductInDB,
       getProductWithId: getProductWithId,
       updateReviews: updateReviews,
-      removeReviewsFromProduct: removeReviewsFromProduct
+      removeReviewsFromProduct: removeReviewsFromProduct,
+      getReviewsFromProduct: getReviewsFromProduct
     };
   }
 ];
