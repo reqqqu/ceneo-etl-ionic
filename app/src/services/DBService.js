@@ -32,6 +32,10 @@ module.exports = [
           console.log(_products);
       };
 
+    /**
+     * Gets PRODUCTS table from database
+     * @returns {*}
+     */
       function getAllProducts() {
         return $q(function (resolve, reject) {
           var options = {};
@@ -44,30 +48,56 @@ module.exports = [
         });
       }
 
+    /**
+     * Adds new product to database
+     * @param product
+     */
       function addProduct(product) {
         _products.insert(product);
         console.log('----PRODUCT ADDED TO DATABASE----');
       }
 
+    /**
+     * Updates given product in database
+     * @param product
+     */
       function updateProduct(product) {
         _products.update(product);
       }
 
+    /**
+     * Deletes given product from database
+     * @param product
+     */
       function deleteProduct(product) {
         _products.remove(product);
       }
 
+    /**
+     * Checks if product with given id is alredy in database
+     * @param productId
+     */
       function isProductInDB(productId) {
         return getProductWithId(productId).then(function (data) {
           return data !== undefined;
         });
       }
 
+    /**
+     * Gets product with given id from database
+     * @param productId
+     */
       function getProductWithId(productId) {
         return getAllProducts().then(function () {
           return _products.find({ id : productId})[0];
         });
       }
+
+    /**
+     * Updates reviews for product with id given in parameters
+     * @param productId
+     * @param reviews
+     */
       function updateReviews(productId, reviews) {
         return getProductWithId(productId).then(function (productFromDB) {
           productFromDB.reviews = [].concat(productFromDB.reviews, reviews);
@@ -76,10 +106,22 @@ module.exports = [
         })
       }
 
+    /**
+     * Removes all reviews from product with id given in parameters
+     * @param productId
+     */
+      function removeReviewsFromProduct(productId) {
+
+        return getProductWithId(productId).then(function (productFromDB) {
+          productFromDB.reviews = [];
+          updateProduct(productFromDB);
+          console.log('REVIEWS CLEARED FROM PRODUCT', productFromDB);
+        });
+      }
+
 
 
     // public api
-    //@todo: add remaining CRUD methods for database management
     return {
       initDB : initDB,
       getAllProducts: getAllProducts,
@@ -88,7 +130,8 @@ module.exports = [
       deleteProduct: deleteProduct,
       isProductInDB: isProductInDB,
       getProductWithId: getProductWithId,
-      updateReviews: updateReviews
+      updateReviews: updateReviews,
+      removeReviewsFromProduct: removeReviewsFromProduct
     };
   }
 ];
