@@ -17,8 +17,9 @@ module.exports = [
 
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
+    	$scope.hasLoadingFinished = false;
     	$scope.search = {
-    		"searchKeywords": ""
+    		"productId": ""
     	};
 
 
@@ -29,12 +30,12 @@ module.exports = [
       });
 
     	$scope.isProductNumberValid = function () {
-    	    return $scope.search.searchKeywords.length < 8 || typeof $scope.search.searchKeywords !== 'string' || isNaN($scope.search.searchKeywords);
+    	    return $scope.search.productId.length < 8 || typeof $scope.search.productId !== 'string' || isNaN($scope.search.productId);
         };
 
 
       $scope.extract = function() {
-            var productId = $scope.search.searchKeywords;
+            var productId = $scope.search.productId;
 
             EtlService.extractData(productId).then(function () {
               $scope.hasExtractFinished = true;
@@ -53,11 +54,12 @@ module.exports = [
         return EtlService.loadData().then(function () {
           $scope.hasTransformFinished = false;
           $scope.hasExtractFinished = false;
+          $scope.hasLoadingFinished = true;
         });
       };
 
       $scope.etl = function() {
-        var productId = $scope.search.searchKeywords;
+        var productId = $scope.search.productId;
 
         return EtlService.extractData(productId).then(function () {
           $scope.hasExtractFinished = true;
@@ -65,6 +67,10 @@ module.exports = [
             $scope.hasTransformFinished = true;
           });
         });
+      }
+
+      $scope.clearReviews = function () {
+        return DBService.removeReviewsFromProduct($scope.search.productId);
       }
     }
 ];
