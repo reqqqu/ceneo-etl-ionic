@@ -13,7 +13,7 @@
       <div class="list list-inset">
         <label class="item item-input product-name-input-label">
           <i class="icon ion-search placeholder-icon"></i>
-          <input type="text" placeholder="Szukaj..." ng-model="search.searchKeywords">
+          <input type="text" placeholder="Szukaj..." ng-model="search.productId">
         </label>
       </div>
 
@@ -22,7 +22,7 @@
         <button class="button button-full" ng-click="extract()" ng-disabled="isProductNumberValid()">
           <span>Extract</span>
         </button>
-        <button class="button button-full" ng-click="transform()" ng-disabled="!hasExtractFinished">
+        <button class="button button-full" ng-click="transform()" ng-disabled="!hasExtractFinished || hasTransformFinished">
           <span>Transform</span>
         </button>
         <button class="button button-full" ng-click="load()" ng-disabled="!hasTransformFinished">
@@ -32,6 +32,10 @@
 
       <button class="button button-full" ng-click="etl()" ng-disabled="isProductNumberValid()">
         <span>ETL</span>
+      </button>
+
+      <button class="button button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
+        <span>CLEAR REVIEWS --- JUST FOR TESTING</span>
       </button>
     </div>
   </ion-content>
