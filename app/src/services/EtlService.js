@@ -48,7 +48,7 @@ module.exports = [
        */
       var transformData = function() {
         return _transformExtractedData(extractedData, extractedProductId).then(function (data) {
-          console.log('TRANSFORMED PRODUCT ', transformedProduct);
+          console.log('TRANSFORMED PRODUCT BEFORE ADDING REVIEWS', transformedProduct, 'REVIEWS TO ADD TO PRODUCT',  transformedReviews);
         });
       };
 
@@ -186,7 +186,7 @@ module.exports = [
           };
         }
 
-        console.log('ADDED ', newReviewsCount, ' NEW REVIEWS TO PRODUCT');
+        console.log( newReviewsCount, 'NEW REVIEWS TO ADD TO PRODUCT');
 
         deferred.resolve(reviewDataArray);
         return deferred.promise;

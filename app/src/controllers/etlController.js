@@ -39,6 +39,7 @@ module.exports = [
 
             EtlService.extractData(productId).then(function () {
               $scope.hasExtractFinished = true;
+              $scope.hasTransformFinished = false;
             });
 
             return $scope.data;
