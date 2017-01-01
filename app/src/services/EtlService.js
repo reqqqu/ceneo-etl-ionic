@@ -198,21 +198,21 @@ module.exports = [
        */
       function _getReviewObjectFromHTML(reviewNode) {
         var review             = new ReviewFactory();
-        var disadvantagesNodes = reviewNode.querySelectorAll('.pros-cell ul li');
-        if(disadvantagesNodes.length > 0) {
-          for(var x=0; x<disadvantagesNodes.length; x++) {
-            review.disadvantages.push(disadvantagesNodes[x].innerHTML);
-          }
-        }
-        disadvantagesNodes = [];
-
-        var advantagesNodes = reviewNode.querySelectorAll('.cons-cell ul li');
+        var advantagesNodes = reviewNode.querySelectorAll('.pros-cell ul li');
         if(advantagesNodes.length > 0) {
           for(var x=0; x<advantagesNodes.length; x++) {
             review.advantages.push(advantagesNodes[x].innerHTML);
           }
         }
         advantagesNodes = [];
+
+        var disadvantagesNodes = reviewNode.querySelectorAll('.cons-cell ul li');
+        if(disadvantagesNodes.length > 0) {
+          for(var x=0; x<disadvantagesNodes.length; x++) {
+            review.disadvantages.push(disadvantagesNodes[x].innerHTML);
+          }
+        }
+        disadvantagesNodes = [];
 
         review.summary           = reviewNode.querySelector('.product-review-body').innerHTML;
         review.starsCount        = reviewNode.querySelector('.review-score-count').innerHTML;

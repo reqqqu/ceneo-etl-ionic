@@ -1,3 +1,42 @@
+html, .title {
+  font-weight: 200 !important;
+}
+
+.bar-header {
+  .back-button {
+    .back-text {
+      .previous-title {
+        font-weight: 200 !important;
+        color: $ceneoetl-shadow !important;
+      }
+    }
+  }
+}
+
 .center-text {
   text-align: center;
+}
+
+.card-background {
+  @include background-gradient($ceneoetl-primary, $ceneoetl-secondary);
+
+  .card-background-header {
+    @include background-gradient($ceneoetl-shadowlite, $ceneoetl-shadow);
+  }
+
+  .card-text {
+    color: $ceneoetl-lite;
+  }
+}
+
+.wrap-normal {
+  white-space: normal;
+}
+
+.button {
+  &.button-full {
+    &.margin-none {
+      margin: 0;
+    }
+  }
 }

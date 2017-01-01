@@ -9,12 +9,14 @@
 module.exports = [
     '$scope',
     '$sce',
+    '$state',
     '$ionicPlatform',
     'EtlService',
     'DBService',
     'CSVService',
 
-    function($scope, $sce, $ionicPlatform, EtlService, DBService, CSVService) {
+
+    function($scope, $sce, $state, $ionicPlatform, EtlService, DBService, CSVService) {
 
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
@@ -70,10 +72,15 @@ module.exports = [
 
       $scope.clearReviews = function () {
         return DBService.removeReviewsFromProduct($scope.search.productId);
-      }
+      };
+
 
       $scope.saveToCSV = function() {
         return CSVService.saveProductReviewsToCSV($scope.search.productId);
       }
+
+      $scope.viewReviews = function() {
+        $state.go('reviews', { productId: $scope.search.productId });
+      };
     }
 ];

@@ -61,14 +61,13 @@ angular.module('CeneoETL', [
           }
         }
       })
-      .state('app.stats', {
-        url: '/stats',
-        //cache: true, //keep commented up until results caching is (not) confirmed w/ guys
-        views: {
-          'tab-stats': {
-            templateUrl: 'templates/views/stats.html',
-            controller: 'StatsController'
-          }
+      .state('reviews', {
+        url: '/reviews',
+        //cache: true,
+        templateUrl: 'templates/views/reviews.html',
+        controller: 'ReviewsController',
+        params: {
+          productId: ""
         }
       });
 
@@ -82,7 +81,7 @@ angular.module('CeneoETL', [
 //
   .controller( 'MainController',     require( './controllers/mainController'     ) )
   .controller( 'EtlController',     require( './controllers/etlController'     ) )
-  .controller( 'StatsController',     require( './controllers/statsController' ) )
+  .controller( 'ReviewsController',     require( './controllers/reviewsController' ) )
 
 // Angular module services
 //

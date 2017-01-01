@@ -1,0 +1,32 @@
+.list {
+  .review-container {
+    padding: 0;
+    border-radius: 4px;
+
+    .review-item {
+      @include flex;
+      @include flex-align-center;
+
+      .text-justify {
+        text-align: justify;
+      }
+    }
+  }
+
+  & .review-container:not(:last-child) {
+    margin-bottom: 16px;
+  }
+}
+
+.list-icon {
+  margin-right: 16px;
+  font-size: 24px;
+
+  &.recommended-yes {
+    color: $ceneoetl-accent2;
+  }
+
+  &.recommended-no {
+    color: $ceneoetl-accent;
+  }
+}

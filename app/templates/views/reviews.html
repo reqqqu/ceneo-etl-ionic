@@ -1,0 +1,100 @@
+<ion-view title="Opinie">
+
+
+  <ion-content class="has-header padding">
+
+    <!-- product info card-->
+    <div class="card">
+      <div class="item item-text-wrap center-text card-background">
+        <div class="card-text">
+          <span>Lista opinii dla produktu:</span><br />
+          <span>{{productDetails.brand}}&nbsp;{{productDetails.model}}</span><br />
+          <span>ID: {{productDetails.id}}</span>
+        </div>
+      </div>
+    </div>
+
+    <ion-list>
+      <ion-item class="review-container card-background" ng-repeat="review in reviews">
+
+        <div class="item item-divider card-background-header review-item">
+          <div class="card-text list-icon">
+            <i class="icon ion-person"></i>
+          </div>
+          <div class="card-text">{{review.author}}</div>
+        </div>
+
+        <div class="item review-item">
+          <div class="list-icon">
+            <i class="icon ion-calendar"></i>
+          </div>
+          <div>{{review.submissionDate}}</div>
+        </div>
+
+        <div class="item review-item" ng-if="review.recommendsProduct">
+          <div class="list-icon" ng-show="review.recommendsProduct === 'Polecam'">
+            <i class="icon ion-checkmark"></i>
+          </div>
+          <div class="list-icon" ng-show="review.recommendsProduct === 'Nie polecam'">
+            <i class="icon ion-close"></i>
+          </div>
+          <div>{{review.recommendsProduct}}</div>
+        </div>
+
+        <div class="item review-item">
+          <div class="list-icon">
+            <i class="icon ion-star"></i>
+          </div>
+          <div>{{review.starsCount}}</div>
+        </div>
+
+        <div class="item review-item wrap-normal">
+          <div class="list-icon">
+            <i class="icon ion-chatbubble-working"></i>
+          </div>
+          <div class="text-justify">{{review.summary}}</div>
+        </div>
+
+
+        <div class="item review-item" ng-if="review.advantages.length > 0">
+          <div class="list-icon">
+            <i class="icon ion-arrow-graph-up-right"></i>
+          </div>
+          <ul class="wrap-normal">
+            <li ng-repeat="advantage in ::review.advantages">{{advantage}}</li>
+          </ul>
+        </div>
+
+        <div class="item review-item" ng-if="review.disadvantages.length > 0">
+          <div class="list-icon">
+            <i class="icon ion-arrow-graph-down-right"></i>
+          </div>
+          <ul class="wrap-normal">
+            <li ng-repeat="disadvantage in ::review.disadvantages">{{disadvantage}}</li>
+          </ul>
+        </div>
+
+        <div class="item review-item">
+          <div class="list-icon">
+            <i class="icon ion-thumbsup"></i>
+          </div>
+          <div>{{review.ratedUsefulCount}}</div>
+        </div>
+
+        <div class="item review-item">
+          <div class="list-icon">
+            <i class="icon ion-thumbsdown"></i>
+          </div>
+          <div>{{review.ratedUselessCount}}</div>
+        </div>
+
+        <button class="button button-full margin-none" ng-click="saveReview()">
+          <span>Zapisz tę opinię o produkcie do pliku CSV</span>
+        </button>
+      </ion-item>
+    </ion-list>
+
+    <ion-infinite-scroll ng-if="!noMoreItems" on-infinite="loadMoreItems()" distance="5%" icon="ion-loading-c"></ion-infinite-scroll>
+
+  </ion-content>
+</ion-view>
