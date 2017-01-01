@@ -36,6 +36,21 @@
         </button>
       </div>
 
+      <div class="etl-progress-info">
+        <div class="etl-progress-item">
+          <span>Liczba wykonanych requestów</span>
+          <span>{{ numberOfRequestsMade }}</span>
+        </div>
+        <div class="etl-progress-item">
+          <span>Produkt już był w bazie</span>
+          <span>{{ productExistsInDatabase}}</span>
+        </div>
+        <div class="etl-progress-item">
+          <span>Liczba nowych opinii dodanych do bazy</span>
+          <span>{{ numberOfReviewsAddedToDatabase }}</span>
+        </div>
+      </div>
+
       <div class="action-buttons">
         <button class="button button-centered button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
           <span>Wyczyść wszystkie opinie dla tego produktu</span>
@@ -49,6 +64,7 @@
           <span>Pokaż opinie</span>
         </button>
       </div>
+
 
 
     </div>

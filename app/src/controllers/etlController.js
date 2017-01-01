@@ -18,6 +18,10 @@ module.exports = [
 
     function($scope, $sce, $state, $ionicPlatform, EtlService, DBService, CSVService) {
 
+      $scope.numberOfRequestsMade = 0;
+      $scope.numberOfReviewsAddedToDatabase = 0;
+      $scope.productExistsInDatabase = false;
+
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
     	$scope.hasLoadingFinished = false;
@@ -43,20 +47,25 @@ module.exports = [
             return EtlService.extractData(productId).then(function () {
               $scope.hasExtractFinished = true;
               $scope.hasTransformFinished = false;
+
+              $scope.numberOfRequestsMade = 1; // @todo change
             });
       };
 
       $scope.transform = function() {
-        return EtlService.transformData().then(function () {
+        return EtlService.transformData().then(function (productExistsInDB) {
           $scope.hasTransformFinished = true;
+          $scope.productExistsInDatabase = productExistsInDB;
         });
       };
 
       $scope.load = function () {
-        return EtlService.loadData().then(function () {
+        return EtlService.loadData().then(function (numberOfReviewsAdded) {
           $scope.hasTransformFinished = false;
           $scope.hasExtractFinished = false;
           $scope.hasLoadingFinished = true;
+
+          $scope.numberOfReviewsFromRequest = numberOfReviewsAdded;
         });
       };
 

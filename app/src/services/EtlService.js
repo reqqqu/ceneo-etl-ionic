@@ -47,8 +47,9 @@ module.exports = [
        * Public method for accessing data transformation
        */
       var transformData = function() {
-        return _transformExtractedData(extractedData, extractedProductId).then(function (data) {
+        return _transformExtractedData(extractedData, extractedProductId).then(function (productExistsInDB) {
           console.log('TRANSFORMED PRODUCT BEFORE ADDING REVIEWS', transformedProduct, 'REVIEWS TO ADD TO PRODUCT',  transformedReviews);
+          return productExistsInDB;
         });
       };
 
@@ -57,9 +58,11 @@ module.exports = [
        */
       var loadData = function() {
         return _loadTransformedDataToDB().then(function () {
+          var numberOfReviewsAdded = transformedReviews.length;
           transformedReviews = [];
           transformedProduct = {};
           productFromDatabase = false;
+          return numberOfReviewsAdded;
         });
       };
 
@@ -79,11 +82,11 @@ module.exports = [
         /*
          * getting product containers/reviews
          */
-        _getProductObject(doc, productId).then(function (productObject) {
-          transformedProduct = productObject;
+        _getProductObject(doc, productId).then(function (data) {
+          transformedProduct = data.product;
           _transformReviews(doc).then(function (reviewsArray) {
             transformedReviews = reviewsArray;
-            tranformationPromise.resolve(true);
+            tranformationPromise.resolve(data.fromDB);
 
           });
         });
@@ -111,14 +114,20 @@ module.exports = [
             _transformProduct(doc, _productId).then(function (data) {
               productObject = data;
               console.log('NEW PRODUCT. EXTRACTED FROM FROM HTML ', productObject);
-              productPromise.resolve(productObject);
+              productPromise.resolve({
+                product: productObject,
+                fromDB: true
+              });
             });
           } else {
             productFromDatabase = true;
             DBService.getProductWithId(productId).then(function (data) {
               productObject = data;
               console.log('PRODUCT ALREADY IN DB ', productObject);
-              productPromise.resolve(productObject);
+              productPromise.resolve({
+                product: productObject,
+                fromDB: false
+              });
             });
           }
         });
