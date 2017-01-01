@@ -54,7 +54,7 @@ module.exports = [
      */
       function addProduct(product) {
         _products.insert(product);
-        console.log('----PRODUCT ADDED TO DATABASE----');
+        console.log('----PRODUCT ADDED TO DATABASE----', product);
       }
 
     /**
