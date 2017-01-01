@@ -35,7 +35,7 @@ module.exports = [
                 console.log('Successfully got ETL server data.');
                 return res;
             }).error(function(err) {
-                console.log('An error occured while getting ETL server data.', err);
+                console.log('An error occurred while getting ETL server data.', err);
                 return null;
             });
         };

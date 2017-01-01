@@ -13,8 +13,10 @@ module.exports = [
     '$ionicPlatform',
     'EtlService',
     'DBService',
+    'CSVService',
 
-    function($scope, $sce, $state, $ionicPlatform, EtlService, DBService) {
+
+    function($scope, $sce, $state, $ionicPlatform, EtlService, DBService, CSVService) {
 
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
@@ -38,12 +40,10 @@ module.exports = [
       $scope.extract = function() {
             var productId = $scope.search.productId;
 
-            EtlService.extractData(productId).then(function () {
+            return EtlService.extractData(productId).then(function () {
               $scope.hasExtractFinished = true;
               $scope.hasTransformFinished = false;
             });
-
-            return $scope.data;
       };
 
       $scope.transform = function() {
@@ -63,10 +63,9 @@ module.exports = [
       $scope.etl = function() {
         var productId = $scope.search.productId;
 
-        return EtlService.extractData(productId).then(function () {
-          $scope.hasExtractFinished = true;
-          return EtlService.transformData().then(function () {
-            $scope.hasTransformFinished = true;
+        return $scope.extract(productId).then(function () {
+          $scope.transform().then(function () {
+            $scope.load()
           });
         });
       };
@@ -75,9 +74,10 @@ module.exports = [
         return DBService.removeReviewsFromProduct($scope.search.productId);
       };
 
-      $scope.save = function() {
-        return DBService.getReviewsFromProduct($scope.search.productId);
-      };
+
+      $scope.saveToCSV = function() {
+        return CSVService.saveProductReviewsToCSV($scope.search.productId);
+      }
 
       $scope.viewReviews = function() {
         $state.go('reviews', { productId: $scope.search.productId });
