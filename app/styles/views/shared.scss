@@ -3,13 +3,25 @@ html, .title {
 }
 
 .bar-header {
+  background: $ceneoetl-dark !important;
+  padding-left: 70px;
+
   .back-button {
+    color: $ceneoetl-accent2;
     .back-text {
       .previous-title {
         font-weight: 200 !important;
-        color: $ceneoetl-shadow !important;
+        color: $ceneoetl-accent2 !important;
       }
     }
+
+    &:hover {
+      color: $ceneoetl-accent2;
+    }
+  }
+
+  .title {
+    color: $ceneoetl-lite !important;
   }
 }
 
@@ -29,14 +41,49 @@ html, .title {
   }
 }
 
+.card-info {
+  .card-background {
+    background: $ceneoetl-lite !important;
+  }
+
+  .card-text {
+    color: $ceneoetl-secondary;
+    font-size: 1.3em;
+  }
+}
+
 .wrap-normal {
   white-space: normal;
 }
 
 .button {
-  &.button-full {
-    &.margin-none {
-      margin: 0;
-    }
+
+  &.button-centered {
+    max-width: 40%;
+    min-width: 450px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+  &.button-full.margin-none {
+    margin: 0;
+  }
+}
+
+.color-red {
+  color: $ceneoetl-accent !important;
+}
+
+.color-green {
+  color: $ceneoetl-accent2 !important;
+}
+
+
+.pane {
+  ion-content {
+    padding: 20px 70px 50px 70px;
   }
 }

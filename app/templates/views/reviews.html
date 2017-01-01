@@ -4,11 +4,10 @@
   <ion-content class="has-header padding">
 
     <!-- product info card-->
-    <div class="card">
+    <div class="card card-info">
       <div class="item item-text-wrap center-text card-background">
         <div class="card-text">
-          <span>Lista opinii dla produktu:</span><br />
-          <span>{{productDetails.brand}}&nbsp;{{productDetails.model}}</span><br />
+          <span>{{productDetails.brand}}&nbsp;{{productDetails.model}}</span><br /><br />
           <span>ID: {{productDetails.id}}</span>
         </div>
       </div>
@@ -31,22 +30,26 @@
           <div>{{review.submissionDate}}</div>
         </div>
 
-        <div class="item review-item" ng-if="review.recommendsProduct">
-          <div class="list-icon" ng-show="review.recommendsProduct === 'Polecam'">
-            <i class="icon ion-checkmark"></i>
+        <div class="item review-item inner-items-space-between" ng-if="review.recommendsProduct">
+          <div class="review-item">
+            <div class="list-icon" ng-show="review.recommendsProduct === 'Polecam'">
+              <i class="icon ion-checkmark color-green"></i>
+            </div>
+            <div class="list-icon" ng-show="review.recommendsProduct === 'Nie polecam'">
+              <i class="icon ion-close color-red"></i>
+            </div>
+            <div>{{review.recommendsProduct}}</div>
           </div>
-          <div class="list-icon" ng-show="review.recommendsProduct === 'Nie polecam'">
-            <i class="icon ion-close"></i>
+          <div class="review-item">
+            <div class="list-icon">
+              <i class="icon ion-star" ng-repeat="i in getNumber(review.starsCount) track by $index"></i>
+              <i class="ion-ios-star-half" ng-if="hasHalfStar(review.starsCount)"></i>
+            </div>
+            <div>{{review.starsCount}}</div>
           </div>
-          <div>{{review.recommendsProduct}}</div>
         </div>
 
-        <div class="item review-item">
-          <div class="list-icon">
-            <i class="icon ion-star"></i>
-          </div>
-          <div>{{review.starsCount}}</div>
-        </div>
+
 
         <div class="item review-item wrap-normal">
           <div class="list-icon">
@@ -74,21 +77,23 @@
           </ul>
         </div>
 
-        <div class="item review-item">
-          <div class="list-icon">
-            <i class="icon ion-thumbsup"></i>
+        <div class="item review-item inner-items-space-around">
+          <div class="review-item">
+            <div class="list-icon">
+              <i class="icon ion-thumbsup color-green"></i>
+            </div>
+            <div class="color-green">{{review.ratedUsefulCount}}</div>
           </div>
-          <div>{{review.ratedUsefulCount}}</div>
+          <div class="review-item">
+            <div class="list-icon">
+              <i class="icon ion-thumbsdown color-red"></i>
+            </div>
+            <div class="color-red">{{review.ratedUselessCount}}</div>
+          </div>
+
         </div>
 
-        <div class="item review-item">
-          <div class="list-icon">
-            <i class="icon ion-thumbsdown"></i>
-          </div>
-          <div>{{review.ratedUselessCount}}</div>
-        </div>
-
-        <button class="button button-full margin-none" ng-click="saveReview()">
+        <button class="button button-full margin-none" ng-click="saveReview(review.id)">
           <span>Zapisz tę opinię o produkcie do pliku CSV</span>
         </button>
       </ion-item>

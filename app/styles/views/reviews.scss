@@ -10,6 +10,14 @@
       .text-justify {
         text-align: justify;
       }
+
+      &.inner-items-space-around {
+        justify-content: space-around;
+      }
+
+      &.inner-items-space-between {
+        justify-content: space-between;
+      }
     }
   }
 

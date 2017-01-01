@@ -1,9 +1,9 @@
 <ion-view title="ETL">
   <ion-content class="has-header">
-    <div class="etl-buttons">
+    <div class="main-wrapper">
 
       <!-- info card -->
-      <div class="card card-instruction">
+      <div class="card card-info">
         <div class="item item-text-wrap center-text card-background">
           <span class="card-text">Poniżej wpisz ID produktu, dla którego chcesz pobrać opinie</span>
         </div>
@@ -18,33 +18,39 @@
       </div>
 
       <!-- etl buttons -->
-      <div class="button-bar">
-        <button class="button button-full" ng-click="extract()" ng-disabled="isProductNumberValid()">
-          <span>EXTRACT</span>
-        </button>
-        <button class="button button-full" ng-click="transform()" ng-disabled="!hasExtractFinished || hasTransformFinished">
-          <span>TRANSFORM</span>
-        </button>
-        <button class="button button-full" ng-click="load()" ng-disabled="!hasTransformFinished">
-          <span>LOAD</span>
+      <div class="etl-buttons">
+        <div class="button-bar">
+          <button class="button" ng-click="extract()" ng-disabled="isProductNumberValid()">
+            <span>EXTRACT</span>
+          </button>
+          <button class="button" ng-click="transform()" ng-disabled="!hasExtractFinished || hasTransformFinished">
+            <span>TRANSFORM</span>
+          </button>
+          <button class="button" ng-click="load()" ng-disabled="!hasTransformFinished">
+            <span>LOAD</span>
+          </button>
+        </div>
+
+        <button class="button button-full" ng-click="etl()" ng-disabled="isProductNumberValid() || hasTransformFinished">
+          <span>ETL</span>
         </button>
       </div>
 
-      <button class="button button-full" ng-click="etl()" ng-disabled="isProductNumberValid() || hasTransformFinished">
-        <span>ETL</span>
-      </button>
+      <div class="action-buttons">
+        <button class="button button-centered button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
+          <span>Wyczyść wszystkie opinie dla tego produktu</span>
+        </button>
 
-      <button class="button button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
-        <span>Wyczyść wszystkie opinie dla tego produktu</span>
-      </button>
+        <button class="button button-centered button-full" ng-click="saveToCSV()" ng-disabled="!hasLoadingFinished" >
+          <span>Zapisz wszystkie opinie o produkcie do pliku CSV</span>
+        </button>
 
-      <button class="button button-full" ng-click="saveToCSV()" ng-disabled="!hasLoadingFinished" >
-        <span>Zapisz wszystkie opinie o produkcie do pliku CSV</span>
-      </button>
+        <button class="button button-centered button-full" ng-click="viewReviews()" ng-disabled="!hasLoadingFinished">
+          <span>Pokaż opinie</span>
+        </button>
+      </div>
 
-      <button class="button button-full" ng-click="viewReviews()" ng-disabled="!hasLoadingFinished">
-        <span>Pokaż opinie</span>
-      </button>
+
     </div>
   </ion-content>
 </ion-view>
