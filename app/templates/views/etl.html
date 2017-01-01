@@ -37,6 +37,9 @@
       <button class="button button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
         <span>CLEAR REVIEWS --- JUST FOR TESTING</span>
       </button>
+
+      <button class="button button-full" ng-click="save()" ng-disabled="!hasLoadingFinished || hasExtractFinished" >
+        <span>Zapisz opinie o produkcie do pliku CSV</span>
     </div>
   </ion-content>
 </ion-view>

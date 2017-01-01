@@ -63,7 +63,6 @@ module.exports = [
         });
       };
 
-
       /**
        * Transform data from html tags to javascript objects
        * @param data
