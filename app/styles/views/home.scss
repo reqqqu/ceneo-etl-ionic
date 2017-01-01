@@ -31,19 +31,10 @@
   bottom: 0 !important;
 }
 
-.pane {
-  ion-content {
-    padding: 20px 50px 50px 50px;
-  }
+.action-buttons {
+  padding: 30px;
 }
 
-.card-instruction {
-  .card-background {
-    background: $ceneoetl-lite !important;
-  }
-
-  .card-text {
-    color: $ceneoetl-secondary;
-    font-weight: 600;
-  }
+.etl-buttons {
+  padding: 10px;
 }

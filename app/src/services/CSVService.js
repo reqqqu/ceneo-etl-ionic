@@ -25,6 +25,10 @@ module.exports = [
       });
     }
 
+    function saveSingleReviewToCSV(productId, reviewId) {
+      //@todo implement
+    };
+
     /**
      * Converts JSON to CSV
      * @param objArray
@@ -46,7 +50,8 @@ module.exports = [
 
 
     return {
-      saveProductReviewsToCSV: saveProductReviewsToCSV
+      saveProductReviewsToCSV: saveProductReviewsToCSV,
+      saveSingleReviewToCSV: saveProductReviewsToCSV
     }
   }
 ];

@@ -11,8 +11,9 @@ module.exports = [
     '$stateParams',
     '$ionicHistory',
     'DBService',
+    'CSVService',
 
-    function($scope, $stateParams, $ionicHistory, DBService) {
+    function($scope, $stateParams, $ionicHistory, DBService, CSVService) {
       $scope.productDetails = {};
       $scope.noMoreItems = false;
       $scope.reviews = [];
@@ -32,6 +33,15 @@ module.exports = [
           };
         });
       }
+
+      function _findReviewWithId(reviewId) {
+        for( var key in productData.reviews) {
+          if(productData.reviews[key].id === reviewId) {
+            return productData.reviews[key];
+          }
+        }
+        return {};
+      };
 
       $scope.goBack = function(){
         $ionicHistory.goBack();
@@ -60,7 +70,29 @@ module.exports = [
       });
 
       // @TODO: implement single review save to CSV
-      $scope.saveReview = function() {};
+      $scope.saveReview = function(reviewId) {
+        var reviewToSave = _findReviewWithId(reviewId);
+        return CSVService.saveSingleReviewToCSV(reviewToSave);
+      };
+
+      $scope.getNumber = function(num) {
+        console.log(num);
+        console.log(new Array(parseInt(num)));
+        return new Array(parseInt(num));
+      };
+
+      $scope.hasHalfStar = function(numberOfStars) {
+        var number = parseFloat(numberOfStars.replace(',', '.'));
+        var modulo;
+        if(number >= 1) {
+          modulo = number % parseInt(number);
+        }else {
+          modulo = number;
+        }
+
+        console.log(number, modulo);
+        return modulo > 0;
+      };
 
       init();
     }
