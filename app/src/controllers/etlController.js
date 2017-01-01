@@ -73,5 +73,9 @@ module.exports = [
       $scope.clearReviews = function () {
         return DBService.removeReviewsFromProduct($scope.search.productId);
       }
+
+      $scope.save = function() {
+        return DBService.getReviewsFromProduct($scope.search.productId);
+      }
     }
 ];
