@@ -16,7 +16,8 @@ module.exports = [
         var reviews = productFromDB.reviews;
         var json1 = JSON.stringify(reviews);
         var json2 = json1.replace(/\\n/g, "")
-          .replace(/\[\]/g, "\"---\"");
+          .replace(/\[\]/g, "\"---\"")
+          .replace(";", "");
         var csv = _convert(json2);
         csv ='ADVANTAGES; DISADVANTAGES; SUMMARY; STARS COUNT; AUTHOR; SUBMISSION DATE; RECOMMENDS PRODUCT; RATED USEFUL COUNT; RATED USELESS COUNT; ID; \n' + csv;
         var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -25,8 +26,11 @@ module.exports = [
       });
     }
 
-    function saveSingleReviewToCSV(productId, reviewId) {
-      //@todo implement
+    function saveSingleReviewToTXT(reviewId) {
+      var json = JSON.stringify(reviewId);
+      var blob = new Blob([json], {type: "text/plain;charset=utf-8"});
+      var fileName = 'ProductReview.txt';
+      saveAs(blob, fileName);
     };
 
     /**
@@ -51,7 +55,7 @@ module.exports = [
 
     return {
       saveProductReviewsToCSV: saveProductReviewsToCSV,
-      saveSingleReviewToCSV: saveProductReviewsToCSV
+      saveSingleReviewToTXT: saveSingleReviewToTXT
     }
   }
 ];
