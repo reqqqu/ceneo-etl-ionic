@@ -6,6 +6,7 @@
 
 @import "_variables";
 @import "_fonts";
+@import "_mixins";
 @import "views/shared";
 
 /**
@@ -26,3 +27,4 @@
  */
 
 @import "views/home";
+@import "views/reviews";

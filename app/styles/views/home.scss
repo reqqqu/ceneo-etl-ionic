@@ -6,17 +6,6 @@
   padding: 1rem;
 }
 
-.card-background {
-  background: #3498db; /* Old browsers */
-  background: -moz-linear-gradient(left, #3498db 0%, #2980b9 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, #3498db 0%,#2980b9 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, #3498db 0%,#2980b9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-
-  .card-text {
-    color: $ceneoetl-lite;
-  }
-}
-
 .button {
   border-radius: 0px !important;
   background: $ceneoetl-primary;

@@ -9,11 +9,12 @@
 module.exports = [
     '$scope',
     '$sce',
+    '$state',
     '$ionicPlatform',
     'EtlService',
     'DBService',
 
-    function($scope, $sce, $ionicPlatform, EtlService, DBService) {
+    function($scope, $sce, $state, $ionicPlatform, EtlService, DBService) {
 
     	$scope.hasExtractFinished = false;
     	$scope.hasTransformFinished = false;
@@ -68,14 +69,18 @@ module.exports = [
             $scope.hasTransformFinished = true;
           });
         });
-      }
+      };
 
       $scope.clearReviews = function () {
         return DBService.removeReviewsFromProduct($scope.search.productId);
-      }
+      };
 
       $scope.save = function() {
         return DBService.getReviewsFromProduct($scope.search.productId);
-      }
+      };
+
+      $scope.viewReviews = function() {
+        $state.go('reviews', { productId: $scope.search.productId });
+      };
     }
 ];

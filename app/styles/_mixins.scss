@@ -1,0 +1,27 @@
+@mixin flex() {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@mixin flex-align-center() {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+@mixin flex-justify-center() {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+@mixin background-gradient($primary, $secondary) {
+  background: $primary; /* Old browsers */
+  background: -moz-linear-gradient(left, $primary 0%, $secondary 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, $primary 0%,$secondary 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, $primary 0%,$secondary 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}

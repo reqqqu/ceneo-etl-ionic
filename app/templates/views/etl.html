@@ -1,4 +1,4 @@
-<ion-view title="Home">
+<ion-view title="ETL">
   <ion-content class="has-header">
     <div class="etl-buttons">
 
@@ -39,7 +39,12 @@
       </button>
 
       <button class="button button-full" ng-click="save()" ng-disabled="!hasLoadingFinished || hasExtractFinished" >
-        <span>Zapisz opinie o produkcie do pliku CSV</span>
+        <span>Zapisz wszystkie opinie o produkcie do pliku CSV</span>
+      </button>
+
+      <button class="button button-full" ng-click="viewReviews()" ng-disabled="!hasLoadingFinished">
+        <span>Pokaż opinie</span>
+      </button>
     </div>
   </ion-content>
 </ion-view>
