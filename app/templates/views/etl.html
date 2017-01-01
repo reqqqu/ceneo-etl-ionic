@@ -3,9 +3,9 @@
     <div class="etl-buttons">
 
       <!-- info card -->
-      <div class="card">
+      <div class="card card-instruction">
         <div class="item item-text-wrap center-text card-background">
-          <span class="card-text">Wprowadź nazwę produktu, którego opinie chciał(a)byś sprawdzić, a następnie użyj przycisku(-ów) ETL, aby rozpocząć proces.</span>
+          <span class="card-text">Poniżej wpisz ID produktu, dla którego chcesz pobrać opinie</span>
         </div>
       </div>
 
@@ -20,13 +20,13 @@
       <!-- etl buttons -->
       <div class="button-bar">
         <button class="button button-full" ng-click="extract()" ng-disabled="isProductNumberValid()">
-          <span>Extract</span>
+          <span>EXTRACT</span>
         </button>
         <button class="button button-full" ng-click="transform()" ng-disabled="!hasExtractFinished || hasTransformFinished">
-          <span>Transform</span>
+          <span>TRANSFORM</span>
         </button>
         <button class="button button-full" ng-click="load()" ng-disabled="!hasTransformFinished">
-          <span>Load</span>
+          <span>LOAD</span>
         </button>
       </div>
 
@@ -35,11 +35,11 @@
       </button>
 
       <button class="button button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
-        <span>CLEAR REVIEWS --- JUST FOR TESTING</span>
+        <span>Wyczyść wszystkie opinie dla tego produktu</span>
       </button>
 
       <button class="button button-full" ng-click="saveToCSV()" ng-disabled="!hasLoadingFinished" >
-        <span>Zapisz opinie o produkcie do pliku CSV</span>
+        <span>Zapisz wszystkie opinie o produkcie do pliku CSV</span>
       </button>
 
       <button class="button button-full" ng-click="viewReviews()" ng-disabled="!hasLoadingFinished">

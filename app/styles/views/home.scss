@@ -22,3 +22,28 @@
 .product-name-input-label {
   border: 1px solid $ceneoetl-primary;
 }
+
+.tab-nav {
+  display: none;
+}
+
+.has-tabs {
+  bottom: 0 !important;
+}
+
+.pane {
+  ion-content {
+    padding: 20px 50px 50px 50px;
+  }
+}
+
+.card-instruction {
+  .card-background {
+    background: $ceneoetl-lite !important;
+  }
+
+  .card-text {
+    color: $ceneoetl-secondary;
+    font-weight: 600;
+  }
+}

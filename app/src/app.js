@@ -18,7 +18,6 @@ angular.module('CeneoETL', [
     'ionic',
     'ngCordova',
     'ngResource',
-    'pouchdb',
     'lokijs'
 ])
 .run([
@@ -88,7 +87,6 @@ angular.module('CeneoETL', [
   .factory( 'HTTPService',        require( './services/HTTPService' ) )
   .factory( 'EtlService',            require( './services/EtlService') )
   .factory( 'DBService',            require( './services/DBService') )
-  .factory( 'UtilService',            require( './services/UtilService') )
   .factory( 'ProductFactory',            require( './services/ProductFactory') )
   .factory( 'ReviewFactory',            require( './services/ReviewFactory') )
   .factory( 'CSVService',               require( './services/CSVService'))
