@@ -50,7 +50,6 @@ module.exports = [
       $scope.loadMoreItems = function() {
         var reviewsSize = $scope.reviews.length;
         var xhrReviewsSize = productData.reviews.length;
-
         $scope.reviews.push(productData.reviews[reviewsSize]);
 
         if(reviewsSize === xhrReviewsSize-1) {

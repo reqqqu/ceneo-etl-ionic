@@ -15,40 +15,76 @@ module.exports = [
     'DBService',
 
     function($q, HTTPService, ProductFactory, ReviewFactory, DBService) {
-      var extractedData;
+      var extractedDataFromRequests = [];
       var transformedProduct = {};
       var transformedReviews = [];
       var extractedProductId;
       var productFromDatabase = false;
 
+      function _resetFlags() {
+        extractedDataFromRequests = [];
+        transformedProduct = {};
+        transformedReviews = [];
+        productFromDatabase = false;
 
+      }
+
+
+      function _hasMorePages(data) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(data, 'text/html');
+        var links = doc.getElementsByTagName('link');
+        var result = false;
+
+        for(var i = 0; i < links.length; i++){
+          if(links[i].hasAttribute('rel') && links[i].rel === 'next') {
+            result = true;
+            console.log('break', i);
+            break;
+          }
+        }
+
+        return result;
+      }
+
+      function makeHttpRequest(productId, i, callback) {
+        var deferred = $q.defer();
+        HTTPService.makeRequest(productId, i, null).then(function (response) {
+            extractedProductId = productId;
+            extractedDataFromRequests.push(response.data);
+            if (_hasMorePages(response.data)) {
+              i++;
+              makeHttpRequest(productId, i, callback);
+            } else {
+              callback();
+              deferred.resolve();
+            }
+          },
+          function (error) {
+            console.log('error');
+          });
+        return deferred.promise;
+      }
       /**
        * Public method for accessing data extraction
        * @param productId
        */
       var extractData = function (productId) {
-        return HTTPService.makeRequest(productId, 0, null).then(function (response) {
-            extractedData = response.data;
-            extractedProductId = productId;
+        _resetFlags();
+        var deferred = $q.defer();
 
-            // if(thereisresponse) {
-            // set the request flag to false
-            // requestLoop = false;
-            // }
+        makeHttpRequest(productId, 0, function () {
+          deferred.resolve();
+        });
 
-
-          },
-          function (error) {
-            console.log('error');
-          });
+        return deferred.promise;
       };
 
       /**
        * Public method for accessing data transformation
        */
       var transformData = function() {
-        return _transformExtractedData(extractedData, extractedProductId).then(function (productExistsInDB) {
-          console.log('TRANSFORMED PRODUCT BEFORE ADDING REVIEWS', transformedProduct, 'REVIEWS TO ADD TO PRODUCT',  transformedReviews);
+        return _transformExtractedData(extractedDataFromRequests, extractedProductId).then(function (productExistsInDB) {
           return productExistsInDB;
         });
       };
@@ -73,26 +109,36 @@ module.exports = [
        * @private
        */
 
-      var _transformExtractedData = function(data, productId) {
-        var tranformationPromise = $q.defer();
-        var _data = data;
+      var _transformExtractedData = function(dataArray, productId) {
+        var transformationPromise = $q.defer();
+        var _data = dataArray[0];
         var parser = new DOMParser();
         var doc = parser.parseFromString(_data, 'text/html');
+        var reviewTranformationPromises = [];
+        var productFromDB = false;
 
         /*
          * getting product containers/reviews
          */
         _getProductObject(doc, productId).then(function (data) {
           transformedProduct = data.product;
-          _transformReviews(doc).then(function (reviewsArray) {
-            transformedReviews = reviewsArray;
-            tranformationPromise.resolve(data.fromDB);
+          productFromDB = data.fromDB;
 
-          });
+          for(var i = 0; i < dataArray.length; i++) {
+            doc = parser.parseFromString(dataArray[i], 'text/html');
+            reviewTranformationPromises.push(
+            _transformReviews(doc).then(function (reviewsArray) {
+              transformedReviews = [].concat(transformedReviews, reviewsArray);
+            }));
+          }
+
+          $q.all(reviewTranformationPromises).then(function () {
+              transformationPromise.resolve(productFromDB);
+            }
+          );
         });
 
-        return tranformationPromise.promise;
-
+        return transformationPromise.promise;
         /*
          * getting review containers/reviews
          */
@@ -113,20 +159,18 @@ module.exports = [
             var _productId = productId; // @rk: this will be used as well when iteration through review pages is implemented
             _transformProduct(doc, _productId).then(function (data) {
               productObject = data;
-              console.log('NEW PRODUCT. EXTRACTED FROM FROM HTML ', productObject);
               productPromise.resolve({
                 product: productObject,
-                fromDB: true
+                fromDB: false
               });
             });
           } else {
             productFromDatabase = true;
             DBService.getProductWithId(productId).then(function (data) {
               productObject = data;
-              console.log('PRODUCT ALREADY IN DB ', productObject);
               productPromise.resolve({
                 product: productObject,
-                fromDB: false
+                fromDB: true
               });
             });
           }
@@ -193,8 +237,6 @@ module.exports = [
             newReviewsCount++;
           };
         }
-
-        console.log( newReviewsCount, 'NEW REVIEWS TO ADD TO PRODUCT');
 
         deferred.resolve(reviewDataArray);
         return deferred.promise;
