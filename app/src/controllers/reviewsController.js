@@ -71,7 +71,7 @@ module.exports = [
       // @TODO: implement single review save to CSV
       $scope.saveReview = function(reviewId) {
         var reviewToSave = _findReviewWithId(reviewId);
-        return CSVService.saveSingleReviewToCSV(reviewToSave);
+        return CSVService.saveSingleReviewToTXT(reviewToSave);
       };
 
       $scope.getNumber = function(num) {
