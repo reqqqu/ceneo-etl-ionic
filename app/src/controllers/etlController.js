@@ -5,6 +5,7 @@
  * @name CeneoETL.controller:EtlController
  * @description
  * # EtlController
+ * Controller for main app view (ETL)
  */
 module.exports = [
     '$scope',
@@ -18,12 +19,20 @@ module.exports = [
 
     function($scope, $sce, $state, $ionicPlatform, EtlService, DBService, CSVService) {
 
+      /**
+       * Resets productId
+       * @private
+       */
       function _resetProductId() {
         $scope.search = {
           "productId": ""
         };
       }
 
+      /**
+       * Resets controller flags and scope variables
+       * @private
+       */
     	function _resetFlags() {
         $scope.numberOfRequestsMade = 0;
         $scope.numberOfReviewsAddedToDatabase = 0;
@@ -35,25 +44,34 @@ module.exports = [
         $scope.hasLoadingFinished = false;
       }
 
-      _resetFlags();
-      _resetProductId();
-
-
-      $scope.$on('$stateChangeSuccess', function() {
+      function _init() {
         _resetFlags();
         _resetProductId();
-      });
 
-      $ionicPlatform.ready(function() {
-        // Initialize the database.
-        DBService.initDB();
-      });
+        $scope.$on('$stateChangeSuccess', function() {
+          _resetFlags();
+          _resetProductId();
+        });
 
+        $ionicPlatform.ready(function() {
+          // Initialize the database.
+          DBService.initDB();
+        });
+      }
+
+      /**
+       * Checks if input given by user can be valid number of product
+       * @returns {boolean}
+       */
     	$scope.isProductNumberValid = function () {
     	    return $scope.search.productId.length < 8 || typeof $scope.search.productId !== 'string' || isNaN($scope.search.productId);
         };
 
 
+      /**
+       * View method for data extraction
+       * @returns {*|Promise.<TResult>}
+       */
       $scope.extract = function() {
         _resetFlags();
 
@@ -69,6 +87,10 @@ module.exports = [
             });
       };
 
+      /**
+       * View method for data transformation
+       * @returns {*|Promise.<TResult>}
+       */
       $scope.transform = function() {
         $scope.etlInProgress = true;
         return EtlService.transformData().then(function (productExistsInDB) {
@@ -78,6 +100,10 @@ module.exports = [
         });
       };
 
+      /**
+       * View method for data loading
+       * @returns {*|Promise.<TResult>}
+       */
       $scope.load = function () {
         $scope.etlInProgress = true;
         
@@ -91,6 +117,10 @@ module.exports = [
         });
       };
 
+      /**
+       * View method for making complete ETL process
+       * @returns {*}
+       */
       $scope.etl = function() {
         var productId = $scope.search.productId;
 
@@ -101,18 +131,32 @@ module.exports = [
         });
       };
 
+      /**
+       * View method for clearing all reviews of given product
+       * @returns {*}
+       */
       $scope.clearReviews = function () {
-        //_resetFlags();
+        _resetFlags();
         return DBService.removeReviewsFromProduct($scope.search.productId);
       };
 
 
+      /**
+       * View method for saving all reviews to CSV file
+       * @returns {*}
+       */
       $scope.saveToCSV = function() {
         return CSVService.saveProductReviewsToCSV($scope.search.productId);
       }
 
+      /**
+       * Method for redirecting user to reviews view
+       */
       $scope.viewReviews = function() {
-        $state.go('reviews', { productId: $scope.search.productId });
+        return $state.go('reviews', { productId: $scope.search.productId });
       };
+
+
+      _init();
     }
 ];

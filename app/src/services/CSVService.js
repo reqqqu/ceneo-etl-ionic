@@ -27,17 +27,22 @@ module.exports = [
       });
     }
 
-    function saveSingleReviewToTXT(reviewId) {
+    /**
+     *
+     * @param reviewObject
+     * @param productId
+     */
+    function saveSingleReviewToTXT(reviewObject, productId) {
 
       var review ='';
       for (var count=0; count<=9; count++) {
-        var name = Object.getOwnPropertyNames(reviewId)[count];
-        var key =  reviewId[Object.keys(reviewId)[count]];
+        var name = Object.getOwnPropertyNames(reviewObject)[count];
+        var key =  reviewObject[Object.keys(reviewObject)[count]];
         review = review + name + ': ' + key + '\r\n' + '\r\n';
       }
-      var id =  reviewId[Object.keys(reviewId)[9]];
+      var id =  reviewObject.id;
       var blob = new Blob([review], {type: 'text/plain;charset=utf-8'});
-      var fileName = 'ReviewId_' + id + '.txt';
+      var fileName = 'Review_nr_' + id +'_from_product_nr_' + productId +'.txt';
       saveAs(blob, fileName);
     };
 
