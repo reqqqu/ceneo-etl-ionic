@@ -21,6 +21,10 @@ module.exports = [
       var extractedProductId;
       var productFromDatabase = false;
 
+      /**
+       * Resets service flags and global variables
+       * @private
+       */
       function _resetFlags() {
         extractedDataFromRequests = [];
         transformedProduct = {};
@@ -30,6 +34,12 @@ module.exports = [
       }
 
 
+      /**
+       * Checks if product page on ceneo.pl has more pages to load
+       * @param data
+       * @returns {boolean}
+       * @private
+       */
       function _hasMorePages(data) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(data, 'text/html');
@@ -47,6 +57,13 @@ module.exports = [
         return result;
       }
 
+      /**
+       * Recursive method for making http requests to ceneo.pl
+       * @param productId
+       * @param i
+       * @param callback
+       * @returns {Promise}
+       */
       function makeHttpRequest(productId, i, callback) {
         var deferred = $q.defer();
         HTTPService.makeRequest(productId, i, null).then(function (response) {
@@ -65,6 +82,7 @@ module.exports = [
           });
         return deferred.promise;
       }
+
       /**
        * Public method for accessing data extraction
        * @param productId
@@ -244,7 +262,7 @@ module.exports = [
 
       /**
        * Method responsible for parsing review html node to js object
-       * @returns {*}
+       * @returns {Object}
        * @private
        */
       function _getReviewObjectFromHTML(reviewNode) {

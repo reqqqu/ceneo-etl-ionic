@@ -4,7 +4,8 @@
  * @ngdoc function
  * @name CeneoETL.service:ExampleService
  * @description
- * # ExampleService
+ * # HttpService
+ * Containes metod for making http request
  */
 module.exports = [
     '$http',
