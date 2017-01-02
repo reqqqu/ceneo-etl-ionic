@@ -47,16 +47,16 @@
     margin-top: 30px;
 
     .etl-progress-item {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      flex-wrap: nowrap;
+      @include flex;
+      @include flex-justify-space-between;
+      @include flex-direction-row;
+      @include flex-wrap-nowrap;
     }
   }
 }
 
 .spinner-container {
-  display: flex;
+  @include flex;
 
   span {
     margin: auto;

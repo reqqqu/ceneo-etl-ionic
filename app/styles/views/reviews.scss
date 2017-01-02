@@ -13,10 +13,11 @@
 
       &.inner-items-space-around {
         justify-content: space-around;
+        @include flex-justify-space-around;
       }
 
       &.inner-items-space-between {
-        justify-content: space-between;
+        @include flex-justify-space-between;
       }
     }
   }
