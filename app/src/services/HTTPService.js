@@ -32,7 +32,7 @@ module.exports = [
                 method: 'GET',
                 url: customUrl
             }).success(function(res) {
-                console.log('Successfully got ETL server data.');
+                console.log('Successfully got ETL server data.', res.status);
                 return res;
             }).error(function(err) {
                 console.log('An error occurred while getting ETL server data.', err);

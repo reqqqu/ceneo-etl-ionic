@@ -38,3 +38,27 @@
 .etl-buttons {
   padding: 10px;
 }
+
+.etl-progress {
+  .list {
+    min-width: 500px;
+    width: 40%;
+    margin: auto;
+    margin-top: 30px;
+
+    .etl-progress-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+    }
+  }
+}
+
+.spinner-container {
+  display: flex;
+
+  span {
+    margin: auto;
+  }
+}

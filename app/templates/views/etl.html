@@ -20,7 +20,7 @@
       <!-- etl buttons -->
       <div class="etl-buttons">
         <div class="button-bar">
-          <button class="button" ng-click="extract()" ng-disabled="isProductNumberValid()">
+          <button class="button" ng-click="extract()" ng-disabled="isProductNumberValid() || etlInProgress">
             <span>EXTRACT</span>
           </button>
           <button class="button" ng-click="transform()" ng-disabled="!hasExtractFinished || hasTransformFinished">
@@ -31,10 +31,33 @@
           </button>
         </div>
 
-        <button class="button button-full" ng-click="etl()" ng-disabled="isProductNumberValid() || hasTransformFinished">
+        <button class="button button-full" ng-click="etl()" ng-disabled="isProductNumberValid() || hasTransformFinished || etlInProgress">
           <span>ETL</span>
         </button>
+        <div class="spinner-container">
+          <span>
+             <ion-spinner icon="lines" ng-if="etlInProgress"></ion-spinner>
+          </span>
+        </div>
       </div>
+      <ion-list class="etl-progress">
+        <ion-item class="item etl-progress-item" ng-show="hasExtractFinished || hasLoadingFinished">
+          <span>Liczba wykonanych requestów: </span>
+          <span>{{ numberOfRequestsMade }}</span>
+        </ion-item>
+        <ion-item class="item etl-progress-item" ng-show="hasTransformFinished || hasLoadingFinished">
+          <span>Produkt już był w bazie: </span>
+          <span>{{ productExistsInDatabase  ? 'TAK' : 'NIE'}}</span>
+        </ion-item>
+        <ion-item class="item etl-progress-item" ng-show="hasLoadingFinished && productExistsInDatabase">
+          <span>Liczba nowych opinii dodanych do istniejącego produktu: </span>
+          <span>{{ numberOfReviewsAddedToDatabase }}</span>
+        </ion-item>
+        <ion-item class="item etl-progress-item" ng-show="hasLoadingFinished && !productExistsInDatabase">
+          <span>Nowy produkt dodany do bazy z następującą liczbą opinii: </span>
+          <span>{{ numberOfReviewsAddedToDatabase }}</span>
+        </ion-item>
+      </ion-list>
 
       <div class="action-buttons">
         <button class="button button-centered button-full" ng-click="clearReviews()" ng-disabled="!hasLoadingFinished">
@@ -49,6 +72,7 @@
           <span>Pokaż opinie</span>
         </button>
       </div>
+
 
 
     </div>

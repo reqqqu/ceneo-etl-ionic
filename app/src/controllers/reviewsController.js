@@ -50,7 +50,6 @@ module.exports = [
       $scope.loadMoreItems = function() {
         var reviewsSize = $scope.reviews.length;
         var xhrReviewsSize = productData.reviews.length;
-
         $scope.reviews.push(productData.reviews[reviewsSize]);
 
         if(reviewsSize === xhrReviewsSize-1) {
@@ -76,8 +75,6 @@ module.exports = [
       };
 
       $scope.getNumber = function(num) {
-        console.log(num);
-        console.log(new Array(parseInt(num)));
         return new Array(parseInt(num));
       };
 
@@ -89,8 +86,6 @@ module.exports = [
         }else {
           modulo = number;
         }
-
-        console.log(number, modulo);
         return modulo > 0;
       };
 
