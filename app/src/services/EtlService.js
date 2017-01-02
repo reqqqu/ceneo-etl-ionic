@@ -56,7 +56,7 @@ module.exports = [
               i++;
               makeHttpRequest(productId, i, callback);
             } else {
-              callback();
+              callback(i+1);
               deferred.resolve();
             }
           },
@@ -73,8 +73,8 @@ module.exports = [
         _resetFlags();
         var deferred = $q.defer();
 
-        makeHttpRequest(productId, 0, function () {
-          deferred.resolve();
+        makeHttpRequest(productId, 0, function (numberOfRequestsMade) {
+          deferred.resolve(numberOfRequestsMade);
         });
 
         return deferred.promise;

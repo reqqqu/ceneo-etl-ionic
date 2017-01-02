@@ -59,13 +59,13 @@ module.exports = [
 
             var productId = $scope.search.productId;
             $scope.etlInProgress = true;
-            return EtlService.extractData(productId).then(function () {
+            return EtlService.extractData(productId).then(function (numberOfRequestsMade) {
               $scope.hasExtractFinished = true;
               $scope.hasTransformFinished = false;
               $scope.hasLoadingFinished = false;
               $scope.etlInProgress = false;
 
-              $scope.numberOfRequestsMade = 1; // @todo change
+              $scope.numberOfRequestsMade = numberOfRequestsMade; // @todo change
             });
       };
 

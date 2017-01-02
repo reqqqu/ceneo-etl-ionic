@@ -75,8 +75,6 @@ module.exports = [
       };
 
       $scope.getNumber = function(num) {
-        console.log(num);
-        console.log(new Array(parseInt(num)));
         return new Array(parseInt(num));
       };
 
@@ -88,8 +86,6 @@ module.exports = [
         }else {
           modulo = number;
         }
-
-        console.log(number, modulo);
         return modulo > 0;
       };
 
