@@ -1,4 +1,12 @@
 'use strict';
+
+/**
+ * @ngdoc factory
+ * @name ReviewFactory
+ * @description
+ * #ReviewFactory
+ * Contains Review object model and basic method for creating Review object
+ */
 module.exports = [
 
   function () {
@@ -19,7 +27,7 @@ module.exports = [
       /**
        * Constructor, with class name
        */
-      function Review(data) {
+      function Review() {
         return angular.copy(reviewModel);
       }
 

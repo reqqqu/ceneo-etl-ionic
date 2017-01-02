@@ -4,7 +4,7 @@
  * @ngdoc function
  * @name CeneoETL.service:DBService
  * @description
- * # Database service used to store data
+ * #DBService resposible for database management and CRUD methods
  */
 module.exports = [
     'Loki',
@@ -14,31 +14,36 @@ module.exports = [
       var _db;
       var _products;
 
-      function initDB() {
+    /**
+     * Initializes databes and loads data from browser memory
+     */
+    function initDB() {
 
           var idbAdapter = new LokiIndexedAdapter();
-          _db = new Loki('ceneoEtlDB',
-          {
+          var databaseName = 'ceneoEtlDB';
+          var options = {
             adapter: idbAdapter,
             autoload: true,
             autosave: true,
             autosaveInterval: 1000
-          });
+          };
 
+          _db = new Loki(databaseName, options);
+
+          //try to get products collection
           _products = _db.getCollection('products');
 
+          //Adds collection of products if it's not present already
           if (!_products) {
             _products = _db.addCollection('products', {
               indices: ['id']
             });
           }
-
-          getAllProducts(); // @todo delete this line. it's just for testing
-      };
+      }
 
     /**
-     * Gets PRODUCTS table from database
-     * @returns {*}
+     * Gets array of all products from database
+     * @returns {Promise}
      */
       function getAllProducts() {
         return $q(function (resolve, reject) {
@@ -46,7 +51,6 @@ module.exports = [
 
           _db.loadDatabase(options, function () {
             _products = _db.getCollection('products');
-            console.log('PRODUCTS IN DB', _products.data);
             resolve(_products.data);
           });
         });
@@ -54,16 +58,15 @@ module.exports = [
 
     /**
      * Adds new product to database
-     * @param product
+     * @param product {Object}
      */
       function addProduct(product) {
         _products.insert(product);
-        console.log('----PRODUCT ADDED TO DATABASE----', product);
       }
 
     /**
      * Updates given product in database
-     * @param product
+     * @param product {Object}
      */
       function updateProduct(product) {
         _products.update(product);
@@ -71,7 +74,7 @@ module.exports = [
 
     /**
      * Deletes given product from database
-     * @param product
+     * @param product {Object}
      */
       function deleteProduct(product) {
         _products.remove(product);
@@ -79,7 +82,7 @@ module.exports = [
 
     /**
      * Checks if product with given id is alredy in database
-     * @param productId
+     * @param productId {number}
      */
       function isProductInDB(productId) {
         return getProductWithId(productId).then(function (data) {
@@ -89,7 +92,7 @@ module.exports = [
 
     /**
      * Gets product with given id from database
-     * @param productId
+     * @param productId {number}
      */
       function getProductWithId(productId) {
         return getAllProducts().then(function () {
@@ -99,27 +102,25 @@ module.exports = [
 
     /**
      * Updates reviews for product with id given in parameters
-     * @param productId
+     * @param productId {number}
      * @param reviews
      */
       function updateReviews(productId, reviews) {
         return getProductWithId(productId).then(function (productFromDB) {
           productFromDB.reviews = [].concat(productFromDB.reviews, reviews);
           updateProduct(productFromDB);
-          console.log('PRODUCT UPDATED WITH REVIEWS ', reviews);
         })
       }
 
     /**
      * Removes all reviews from product with id given in parameters
-     * @param productId
+     * @param productId {number}
      */
       function removeReviewsFromProduct(productId) {
 
         return getProductWithId(productId).then(function (productFromDB) {
           productFromDB.reviews = [];
           updateProduct(productFromDB);
-          console.log('REVIEWS CLEARED FROM PRODUCT', productFromDB);
         });
       }
 

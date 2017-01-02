@@ -9,11 +9,12 @@
 module.exports = [
     '$scope',
     '$stateParams',
+    '$state',
     '$ionicHistory',
     'DBService',
     'CSVService',
 
-    function($scope, $stateParams, $ionicHistory, DBService, CSVService) {
+    function($scope, $stateParams, $state, $ionicHistory, DBService, CSVService) {
       $scope.productDetails = {};
       $scope.noMoreItems = false;
       $scope.reviews = [];
@@ -22,6 +23,9 @@ module.exports = [
       var hasDataLoaded = false;
 
       function init() {
+        if (!productId) {
+          return $state.go('app.etl', {});
+        }
         DBService.getProductWithId(productId).then(function(data) {
           hasDataLoaded = true;
           productData = data;
@@ -48,6 +52,10 @@ module.exports = [
       };
 
       $scope.loadMoreItems = function() {
+        if (!productId) {
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+          return;
+        }
         var reviewsSize = $scope.reviews.length;
         var xhrReviewsSize = productData.reviews.length;
         $scope.reviews.push(productData.reviews[reviewsSize]);
@@ -59,7 +67,7 @@ module.exports = [
       };
 
       $scope.$on('$stateChangeSuccess', function() {
-        if(hasDataLoaded) {
+        if(hasDataLoaded && productId) {
           $scope.loadMoreItems();
         }
       });
@@ -71,7 +79,7 @@ module.exports = [
       // @TODO: implement single review save to CSV
       $scope.saveReview = function(reviewId) {
         var reviewToSave = _findReviewWithId(reviewId);
-        return CSVService.saveSingleReviewToTXT(reviewToSave);
+        return CSVService.saveSingleReviewToTXT(reviewToSave, productId);
       };
 
       $scope.getNumber = function(num) {
